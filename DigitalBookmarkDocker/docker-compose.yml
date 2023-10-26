@@ -1,0 +1,24 @@
+version: '2'
+
+services:
+  app:
+    image: 'docker-spring-boot-postgres:latest'
+    build:
+      context: .
+    container_name: app
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/digitalbookmark
+      - SPRING_DATASOURCE_USERNAME=digitalbookmark
+      - SPRING_DATASOURCE_PASSWORD=postgrePass
+    ports:
+      - 8080:8080
+
+  db:
+    image: 'postgres:15.1-alpine'
+    container_name: db
+    environment:
+      - POSTGRES_USER=digitalbookmark
+      - POSTGRES_PASSWORD=postgrePass
+      - POSTGRES_DB=digitalbookmark
