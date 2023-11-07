@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Controller
 @Slf4j
-@RequestMapping("/api/student")
+@RequestMapping("/api/students")
 @ResponseBody
 public class StudentController {
     public StudentService studentService;
@@ -26,40 +26,40 @@ public class StudentController {
     }
 
     @GetMapping
-    public List<Student> getUsers() {
+    public List<Student> getStudents() {
         return studentService.getAllStudents();
     }
 
     @GetMapping("/{id}")
-    public Optional<Student> getUserById(@PathVariable Long id) {
-        if (id == null) throw new BadRequestException();
+    public Optional<Student> getStudentById(@PathVariable Long id) {
+        if (id == null) throw new BadRequestException("no id in requets");
         try {
             return studentService.getStudentByID(id);
         }
         catch (Exception e) {
-            throw new NotFoundException();
+            throw new NotFoundException(e.getMessage());
         }
     }
 
     @PostMapping
-    public HttpStatus addUser(@RequestBody Student u) {
+    public HttpStatus addStudent(@RequestBody Student u) {
         try {
             studentService.addStudent(u);
             return HttpStatus.CREATED;
         }
         catch (Exception e) {
-            throw new BadRequestException();
+            throw new BadRequestException(e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
-    public HttpStatus deleteUser(@PathVariable Long id) {
+    public HttpStatus deleteStudent(@PathVariable Long id) {
         try {
             studentService.deleteStudent(id);
             return HttpStatus.OK;
         }
         catch (Exception e) {
-            throw new NotFoundException();
+            throw new NotFoundException(e.getMessage());
         }
     }
 }

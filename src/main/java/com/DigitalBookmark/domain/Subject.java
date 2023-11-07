@@ -26,4 +26,8 @@ public class Subject {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private List<SubjectMarkRecord> subjectMarks;
+
+    @ManyToMany(targetEntity = Teacher.class)
+    @JsonIgnore
+    private List<Teacher> subjectTeachers;
 }

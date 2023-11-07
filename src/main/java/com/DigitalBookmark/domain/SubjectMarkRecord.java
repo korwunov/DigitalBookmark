@@ -17,6 +17,9 @@ public class SubjectMarkRecord {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long markRecordId;
 
+    @Column(nullable = false)
+    private int markValue;
+
     @ManyToOne(targetEntity = Subject.class)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Subject markSubject;

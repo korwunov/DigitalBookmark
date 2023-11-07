@@ -30,4 +30,12 @@ public class Teacher {
     @JsonIgnore
     private List<SubjectMarkRecord> givenMarks;
 
+    @ManyToMany(mappedBy = "subjectTeachers")
+    private List<Subject> teacherSubjects;
+
+    @Override
+    public String toString() {
+        return this.id.toString();
+    }
+
 }

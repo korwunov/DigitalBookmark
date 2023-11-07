@@ -29,4 +29,9 @@ public class Student {
     @OneToMany(mappedBy = "markOwner")
     private List<SubjectMarkRecord> marksList;
 
+    @Override
+    public String toString() {
+        return this.id.toString();
+    }
+
 }
