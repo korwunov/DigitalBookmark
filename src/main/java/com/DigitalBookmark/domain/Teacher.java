@@ -14,16 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "teachers")
-public class Teacher {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private String email;
+public class Teacher extends User {
 
     @OneToMany(mappedBy = "markGiver")
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -35,7 +26,7 @@ public class Teacher {
 
     @Override
     public String toString() {
-        return this.id.toString();
+        return this.getId().toString();
     }
 
 }
