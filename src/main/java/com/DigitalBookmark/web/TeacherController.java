@@ -1,14 +1,12 @@
 package com.DigitalBookmark.web;
 
-import com.DigitalBookmark.domain.Subject;
 import com.DigitalBookmark.domain.SubjectMarkRecord;
 import com.DigitalBookmark.domain.Teacher;
-import com.DigitalBookmark.domain.dto.MarkDTO;
-import com.DigitalBookmark.repositories.SubjectMarkRepository;
+import com.DigitalBookmark.web.dto.MarkDTO;
 import com.DigitalBookmark.services.MarkService;
 import com.DigitalBookmark.services.TeacherService;
-import com.DigitalBookmark.web.utils.BadRequestException;
-import com.DigitalBookmark.web.utils.NotFoundException;
+import com.DigitalBookmark.web.httpStatusesExceptions.BadRequestException;
+import com.DigitalBookmark.web.httpStatusesExceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,6 +45,16 @@ public class TeacherController {
         try {
             this.teacherService.addTeacher(t);
             return HttpStatus.CREATED;
+        }
+        catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public Teacher deleteTeacherById(@PathVariable Long id) {
+        try {
+            return this.teacherService.deleteTeacherById(id);
         }
         catch (Exception e) {
             throw new BadRequestException(e.getMessage());

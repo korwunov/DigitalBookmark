@@ -4,7 +4,7 @@ import com.DigitalBookmark.domain.Student;
 import com.DigitalBookmark.domain.Subject;
 import com.DigitalBookmark.domain.SubjectMarkRecord;
 import com.DigitalBookmark.domain.Teacher;
-import com.DigitalBookmark.domain.dto.MarkDTO;
+import com.DigitalBookmark.web.dto.MarkDTO;
 import com.DigitalBookmark.repositories.StudentRepository;
 import com.DigitalBookmark.repositories.SubjectMarkRepository;
 import com.DigitalBookmark.repositories.SubjectRepository;

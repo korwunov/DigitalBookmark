@@ -1,4 +1,4 @@
-package com.DigitalBookmark.domain.dto;
+package com.DigitalBookmark.web.dto;
 
 import lombok.Data;
 

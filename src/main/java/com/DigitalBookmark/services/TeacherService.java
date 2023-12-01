@@ -1,17 +1,18 @@
 package com.DigitalBookmark.services;
 
+import com.DigitalBookmark.domain.EROLE;
 import com.DigitalBookmark.domain.Subject;
 import com.DigitalBookmark.domain.Teacher;
 import com.DigitalBookmark.repositories.SubjectRepository;
 import com.DigitalBookmark.repositories.TeacherRepository;
+import com.DigitalBookmark.web.dto.SubjectsToAddDTO;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.rmi.server.ExportException;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +24,10 @@ public class TeacherService {
     private SubjectRepository subjectRepository;
 
     public void addTeacher(Teacher t) throws Exception {
-        if (this.teacherRepository.findByEmail(t.getEmail()).isPresent()) throw new Exception("email is already registred");
+        if (this.teacherRepository.findByUsername(t.getUsername()).isPresent()) throw new Exception("email is already registred");
+        Set<EROLE> eroleSet = new HashSet<EROLE>();
+        eroleSet.add(EROLE.ROLE_TEACHER);
+        t.setRoles(eroleSet);
         this.teacherRepository.save(t);
     }
 
@@ -35,15 +39,24 @@ public class TeacherService {
         return this.teacherRepository.findById(id).get();
     }
 
-    public Teacher addSubjectsToTeacher(Long teacherId, List<Long> inputSubjectIds) throws Exception {
-        Optional<Teacher> teacherRecord = this.teacherRepository.findById(teacherId);
+    @Transactional
+    public Teacher deleteTeacherById(Long id) throws Exception {
+        if (id == null) throw new Exception("no id in request");
+        Optional<Teacher> t = this.teacherRepository.findById(id);
+        if (t.isEmpty()) throw new Exception("teacher with id " + id + " not found");
+        this.teacherRepository.deleteById(id);
+        return t.get();
+    }
+
+    public Teacher addSubjectsToTeacher(SubjectsToAddDTO subjects) throws Exception {
+        Optional<Teacher> teacherRecord = this.teacherRepository.findById(subjects.getTeacherId());
         if (teacherRecord.isEmpty()) throw new Exception("teacher not found");
         Teacher teacher = teacherRecord.get();
         List<Subject> subs = teacher.getTeacherSubjects();
         if (subs == null) {
             subs = new ArrayList<Subject>();
         }
-        for (Long id : inputSubjectIds) {
+        for (Long id : subjects.getIds()) {
             Subject s = this.subjectRepository.findById(id).get();
             if (!(subs.contains(s))) {
                 subs.add(s);

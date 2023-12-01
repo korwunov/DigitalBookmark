@@ -1,10 +1,9 @@
 package com.DigitalBookmark.web;
 
 import com.DigitalBookmark.domain.Subject;
-import com.DigitalBookmark.domain.dto.SubjectDTO;
+import com.DigitalBookmark.web.dto.SubjectDTO;
 import com.DigitalBookmark.services.SubjectService;
-import com.DigitalBookmark.web.utils.BadRequestException;
-import com.DigitalBookmark.web.utils.NotFoundException;
+import com.DigitalBookmark.web.httpStatusesExceptions.BadRequestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,6 +43,16 @@ public class SubjectController {
     public Subject getSubjectById(@PathVariable Long id) {
         try {
             return this.subjectService.getSubjectById(id);
+        }
+        catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public Subject deleteSubjectById(@PathVariable Long id) {
+        try {
+            return this.subjectService.deleteSubject(id);
         }
         catch (Exception e) {
             throw new BadRequestException(e.getMessage());

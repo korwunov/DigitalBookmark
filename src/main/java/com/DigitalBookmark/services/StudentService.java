@@ -1,13 +1,16 @@
 package com.DigitalBookmark.services;
 
+import com.DigitalBookmark.domain.EROLE;
 import com.DigitalBookmark.domain.Student;
 import com.DigitalBookmark.repositories.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +20,10 @@ public class StudentService {
 
 
     public void addStudent(Student u) throws Exception {
-        if (studentRepository.findByEmail(u.getEmail()).isPresent()) throw new Exception("email already registered");
+        if (studentRepository.findByUsername(u.getUsername()).isPresent()) throw new Exception("email already registered");
+        Set<EROLE> eroleSet = new HashSet<EROLE>();
+        eroleSet.add(EROLE.ROLE_STUDENT);
+        u.setRoles(eroleSet);
         studentRepository.save(u);
     }
 

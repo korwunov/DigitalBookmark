@@ -1,17 +1,18 @@
 package com.DigitalBookmark.web;
 
-import com.DigitalBookmark.domain.Subject;
 import com.DigitalBookmark.domain.Teacher;
-import com.DigitalBookmark.domain.dto.SubjectsToAddDTO;
+import com.DigitalBookmark.domain.User;
+import com.DigitalBookmark.services.UserService;
+import com.DigitalBookmark.web.dto.RoleDTO;
+import com.DigitalBookmark.web.dto.SubjectsToAddDTO;
 import com.DigitalBookmark.services.TeacherService;
-import com.DigitalBookmark.web.utils.NotFoundException;
+import com.DigitalBookmark.web.httpStatusesExceptions.BadRequestException;
+import com.DigitalBookmark.web.httpStatusesExceptions.ForbiddenException;
+import com.DigitalBookmark.web.httpStatusesExceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @Slf4j
@@ -20,18 +21,31 @@ import java.util.List;
 public class AdminController {
     public TeacherService teacherService;
 
+    public UserService userService;
+
     @Autowired
-    public AdminController(TeacherService teacherService) {
+    public AdminController(TeacherService teacherService, UserService userService) {
         this.teacherService = teacherService;
+        this.userService = userService;
     }
 
-    @PutMapping("/addSubjectsForTeacher/{id}")
-    public Teacher addSubjectsForTeacher(@PathVariable Long id, @RequestBody SubjectsToAddDTO ids) {
+    @PutMapping("/addSubjectsForTeacher")
+    public Teacher addSubjectsForTeacher(@RequestBody SubjectsToAddDTO subjectsInfo) {
         try {
-            return this.teacherService.addSubjectsToTeacher(id, ids.getIds());
+            return this.teacherService.addSubjectsToTeacher(subjectsInfo);
         }
         catch (Exception e) {
             throw new NotFoundException(e.getMessage());
+        }
+    }
+
+    @PutMapping("/setRole")
+    public User setRole(@RequestBody RoleDTO roleInfo) {
+        try {
+            return this.userService.setRole(roleInfo);
+        }
+        catch (Exception e) {
+            throw new ForbiddenException(e.getMessage());
         }
     }
 }

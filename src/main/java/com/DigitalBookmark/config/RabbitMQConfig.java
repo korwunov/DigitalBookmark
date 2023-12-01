@@ -12,19 +12,44 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    @Value("${rabbitmq.queue.name}")
-    private String queueName;
+    @Value("${rabbitmq.auth.queue.name}")
+    private String authQueueName;
+
+    @Value("${rabbitmq.login.queue.name}")
+    private String loginQueueName;
+
+    @Value("${rabbitmq.file.queue.name}")
+    private String fileInfoQueueName;
+
+    @Value("${rabbitmq.file.permission.queue.name}")
+    private String filePermissionQueueName;
 
     @Value("${rabbitmq.exchange.name}")
     private String exchangeName;
 
-    @Value("${rabbitmq.routing_key.name}")
-    private String routingKeyName;
+    @Value("${rabbitmq.auth.routing_key.name}")
+    private String authRoutingKeyName;
+
+    @Value("${rabbitmq.login.routing_key.name}")
+    private String loginRoutingKeyName;
+
+    @Value("${rabbitmq.file.routing_key.name}")
+    private String fileInfoRoutingKeyName;
+
+    @Value("${rabbitmq.file.permission.routing_key.name}")
+    private String filePermissionRoutingKeyName;
 
     @Bean
-    public Queue queue() {
-        return new Queue(queueName);
-    }
+    public Queue authQueue() { return new Queue(authQueueName); }
+
+    @Bean
+    public Queue loginQueue() { return new Queue(loginQueueName); }
+
+    @Bean
+    public Queue fileInfoQueue() { return new Queue(fileInfoQueueName); }
+
+    @Bean
+    public Queue filePermissionQueue() { return new Queue(filePermissionQueueName); }
 
     @Bean
     public TopicExchange exchange() {
@@ -32,20 +57,38 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Binding binding() {
-        return BindingBuilder.bind(queue())
-                .to(exchange()).with(routingKeyName);
+    public Binding authBinding() {
+        return BindingBuilder.bind(authQueue())
+                .to(exchange()).with(authRoutingKeyName);
     }
 
     @Bean
-    public MessageConverter converter() {
-        return new Jackson2JsonMessageConverter();
+    public Binding loginBinding() {
+        return BindingBuilder.bind(loginQueue())
+                .to(exchange()).with(loginRoutingKeyName);
     }
 
     @Bean
-    public AmqpTemplate amqpTemplate(ConnectionFactory connectionFactory) {
-        RabbitTemplate template = new RabbitTemplate(connectionFactory);
-        template.setMessageConverter(converter());
-        return template;
+    public Binding fileInfoBinding() {
+        return BindingBuilder.bind(fileInfoQueue())
+                .to(exchange()).with(fileInfoRoutingKeyName);
     }
+
+    @Bean
+    public Binding filePermissionBinding() {
+        return BindingBuilder.bind(filePermissionQueue()).
+                to(exchange()).with(filePermissionRoutingKeyName);
+    }
+
+//    @Bean
+//    public MessageConverter converter() {
+//        return new Jackson2JsonMessageConverter();
+//    }
+//
+//    @Bean
+//    public AmqpTemplate amqpTemplate(ConnectionFactory connectionFactory) {
+//        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+//        template.setMessageConverter(converter());
+//        return template;
+//    }
 }

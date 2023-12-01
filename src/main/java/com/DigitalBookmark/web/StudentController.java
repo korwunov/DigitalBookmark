@@ -1,9 +1,12 @@
 package com.DigitalBookmark.web;
 
+import com.DigitalBookmark.AuthService.domain.dto.AuthResponseDTO;
 import com.DigitalBookmark.domain.Student;
+import com.DigitalBookmark.services.AuthService;
 import com.DigitalBookmark.services.StudentService;
-import com.DigitalBookmark.web.utils.BadRequestException;
-import com.DigitalBookmark.web.utils.NotFoundException;
+import com.DigitalBookmark.web.httpStatusesExceptions.BadRequestException;
+import com.DigitalBookmark.web.httpStatusesExceptions.NotFoundException;
+import com.DigitalBookmark.web.httpStatusesExceptions.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,13 +23,17 @@ import java.util.Optional;
 public class StudentController {
     public StudentService studentService;
 
+    public AuthService authService;
+
     @Autowired
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService, AuthService authService) {
         this.studentService = studentService;
+        this.authService = authService;
     }
 
     @GetMapping
-    public List<Student> getStudents() {
+    public List<Student> getStudents() {//@RequestHeader("Authorization") String token) {
+        //AuthResponseDTO authData = this.authService.auth(token);
         return studentService.getAllStudents();
     }
 

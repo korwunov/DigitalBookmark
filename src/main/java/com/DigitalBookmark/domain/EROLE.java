@@ -1,4 +1,4 @@
-package com.DigitalBookmark.domain.dto;
+package com.DigitalBookmark.domain;
 
 public enum EROLE {
     ROLE_STUDENT,

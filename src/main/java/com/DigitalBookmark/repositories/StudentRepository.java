@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 @Component
 public interface StudentRepository extends JpaRepository<Student, Long> {
-    Optional<Student> findByEmail(String email);
+    Optional<Student> findByUsername(String email);
 }

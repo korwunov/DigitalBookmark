@@ -2,14 +2,13 @@ package com.DigitalBookmark.services;
 
 import com.DigitalBookmark.domain.Subject;
 import com.DigitalBookmark.domain.Teacher;
-import com.DigitalBookmark.domain.dto.SubjectDTO;
+import com.DigitalBookmark.web.dto.SubjectDTO;
 import com.DigitalBookmark.repositories.SubjectRepository;
 import com.DigitalBookmark.repositories.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.rmi.server.ExportException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,19 +38,20 @@ public class SubjectService {
     }
 
     public List<Subject> getAllSubjects() {
-        List<Subject> l = this.subjectRepository.findAll();
-        return l;
+        return this.subjectRepository.findAll();
     }
 
     public Subject getSubjectById(Long id) throws Exception {
         Optional<Subject> sRecord = this.subjectRepository.findById(id);
-        if (sRecord.isEmpty()) throw new Exception("subject not found");
+        if (sRecord.isEmpty()) throw new Exception("subject with id " + id + " not found");
         return sRecord.get();
     }
 
-    public void deleteSubject(Long id) throws Exception {
+    public Subject deleteSubject(Long id) throws Exception {
+        if (id == null) throw new Exception("no id in request");
         Optional<Subject> sRecord = this.subjectRepository.findById(id);
-        if (sRecord.isEmpty()) throw new Exception("subject not found");
+        if (sRecord.isEmpty()) throw new Exception("subject with id " + id + " not found");
         this.subjectRepository.deleteById(id);
+        return sRecord.get();
     }
 }

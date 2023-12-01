@@ -8,12 +8,70 @@ services:
     container_name: app
     depends_on:
       - db
+#      - auth
+      - fileservice
+      - rabbitmq
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/digitalbookmark
-      - SPRING_DATASOURCE_USERNAME=digitalbookmark
-      - SPRING_DATASOURCE_PASSWORD=postgrePass
+      - POSTGRES_URL=jdbc:postgresql://db:5432/digitalbookmark
+      - POSTGRES_USER=digitalbookmark
+      - POSTGRES_PASS=postgrePass
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
     ports:
-      - 8080:8080
+      - "8080:8080"
+
+#  auth:
+#    image: 'docker-spring-boot-postgres:latest'
+#    build:
+#      context: auth_docker
+#    container_name: auth
+#    depends_on:
+#      - db
+#      - rabbitmq
+#    environment:
+#      - POSTGRES_URL=jdbc:postgresql://db:5432/digitalbookmark
+#      - POSTGRES_USER=digitalbookmark
+#      - POSTGRES_PASS=postgrePass
+#      - RABBITMQ_HOST=rabbitmq
+#      - RABBITMQ_PORT=5672
+#      - RABBITMQ_USERNAME=guset
+#      - RABBITMQ_PASSWORD=guest
+#    ports:
+#      - "8090:8090"
+
+  fileservice:
+    build:
+      context: fileService
+    ports:
+      - "4200:4200"
+    depends_on:
+      - mongo
+      - rabbitmq
+    environment:
+      - APP_PORT=4200
+      - MONGODB_URL=mongodb://mongo:27017
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
+
+  rabbitmq:
+    image: rabbitmq:3.13-rc-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
 
   db:
     image: 'postgres:15.1-alpine'
@@ -22,3 +80,8 @@ services:
       - POSTGRES_USER=digitalbookmark
       - POSTGRES_PASSWORD=postgrePass
       - POSTGRES_DB=digitalbookmark
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
