@@ -8,7 +8,6 @@ services:
     container_name: app
     depends_on:
       - db
-#      - auth
       - fileservice
       - rabbitmq
     environment:
@@ -21,25 +20,6 @@ services:
       - RABBITMQ_PASSWORD=guest
     ports:
       - "8080:8080"
-
-#  auth:
-#    image: 'docker-spring-boot-postgres:latest'
-#    build:
-#      context: auth_docker
-#    container_name: auth
-#    depends_on:
-#      - db
-#      - rabbitmq
-#    environment:
-#      - POSTGRES_URL=jdbc:postgresql://db:5432/digitalbookmark
-#      - POSTGRES_USER=digitalbookmark
-#      - POSTGRES_PASS=postgrePass
-#      - RABBITMQ_HOST=rabbitmq
-#      - RABBITMQ_PORT=5672
-#      - RABBITMQ_USERNAME=guset
-#      - RABBITMQ_PASSWORD=guest
-#    ports:
-#      - "8090:8090"
 
   fileservice:
     build:

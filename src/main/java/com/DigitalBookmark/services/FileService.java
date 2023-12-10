@@ -57,22 +57,25 @@ public class FileService {
                     + fileId + " wrong action");
         }
     }
-
+    //Аннотация показывает, что данный метод является
+    //обработчиком сообщения из очереди digitalbookmark_file_permission_queue
     @RabbitListener(queues = "digitalbookmark_file_permission_queue")
     public String handleFilePermission(String msg) {
+        //Парсинг строки с информацией и файле и пользователе
         List<String> list = List.of(msg.split(";"));
         String fileId = list.get(0);
         Long userId = valueOf(list.get(1));
+        //Поиск пользователя в БД
         Optional<User> uRecord = userRepository.findById(userId);
+        //Если пользователь не найден вернуть false
         if (uRecord.isEmpty()) return "false";
         User u = uRecord.get();
         List<String> ids = u.getFilesID();
+        //Если списко файлов пуст вернуть false
         if (ids == null) return "false";
-        if (ids.contains(fileId)) {
-            return "true";
-        }
-        else {
-            return "false";
-        }
+        //Если список файлов пользователя содержит ID файла из сообщения вернуть true
+        if (ids.contains(fileId)) { return "true"; }
+        //Если список файлов не содержит ID файла из сообщения вернуть false
+        else { return "false"; }
     }
 }

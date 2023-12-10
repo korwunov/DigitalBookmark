@@ -61,10 +61,10 @@ public class TeacherController {
         }
     }
 
-    @PostMapping("/setMark/{id}")
-    public SubjectMarkRecord addMark(@PathVariable Long id, @RequestBody MarkDTO mark) {
+    @PostMapping("/setMark")
+    public SubjectMarkRecord addMark(@RequestBody MarkDTO mark) {
         try {
-            return this.markService.addMarkRecord(id, mark);
+            return this.markService.addMarkRecord(mark);
         }
         catch (Exception e) {
             throw new NotFoundException(e.getMessage());

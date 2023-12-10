@@ -1,7 +1,9 @@
 package com.DigitalBookmark.web;
 
+import com.DigitalBookmark.domain.Student;
 import com.DigitalBookmark.domain.Teacher;
 import com.DigitalBookmark.domain.User;
+import com.DigitalBookmark.services.StudentService;
 import com.DigitalBookmark.services.UserService;
 import com.DigitalBookmark.web.dto.RoleDTO;
 import com.DigitalBookmark.web.dto.SubjectsToAddDTO;
@@ -21,11 +23,14 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
     public TeacherService teacherService;
 
+    public StudentService studentService;
+
     public UserService userService;
 
     @Autowired
-    public AdminController(TeacherService teacherService, UserService userService) {
+    public AdminController(TeacherService teacherService, StudentService studentService, UserService userService) {
         this.teacherService = teacherService;
+        this.studentService = studentService;
         this.userService = userService;
     }
 
@@ -35,6 +40,15 @@ public class AdminController {
             return this.teacherService.addSubjectsToTeacher(subjectsInfo);
         }
         catch (Exception e) {
+            throw new NotFoundException(e.getMessage());
+        }
+    }
+
+    @PutMapping("/addSubjectForStudent")
+    public Student addSubjectForStudent(@RequestBody SubjectsToAddDTO subjectsInfo) {
+        try {
+            return this.studentService.addSubjectToStudent(subjectsInfo);
+        } catch (Exception e) {
             throw new NotFoundException(e.getMessage());
         }
     }

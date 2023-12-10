@@ -2,21 +2,26 @@ package com.DigitalBookmark.services;
 
 import com.DigitalBookmark.domain.EROLE;
 import com.DigitalBookmark.domain.Student;
+import com.DigitalBookmark.domain.Subject;
 import com.DigitalBookmark.repositories.StudentRepository;
+import com.DigitalBookmark.repositories.SubjectRepository;
+import com.DigitalBookmark.web.dto.SubjectsToAddDTO;
+import com.DigitalBookmark.web.httpStatusesExceptions.NotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class StudentService {
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private SubjectRepository subjectRepository;
 
 
     public void addStudent(Student u) throws Exception {
@@ -47,5 +52,37 @@ public class StudentService {
         catch (Exception e) {
             throw new Exception("user not found");
         }
+    }
+
+    @Transactional
+    public Student addSubjectToStudent(SubjectsToAddDTO subjects) throws Exception {
+        Optional<Student> studentRecord = this.studentRepository.findById(subjects.getUserId());
+        if (studentRecord.isEmpty()) throw new NotFoundException("student not found");
+        Student student = studentRecord.get();
+
+        List<Subject> subs = student.getStudentSubjects();
+        if (subs == null) {
+            subs = new ArrayList<Subject>();
+        }
+
+        for (Long id : subjects.getSubjectIds()) {
+            Optional<Subject> subjectRecord = this.subjectRepository.findById(id);
+            if (subjectRecord.isEmpty()) throw new NotFoundException("subject with id " + id + " not found");
+            Subject subject = subjectRecord.get();
+            if (!(subs.contains(subject))) {
+                subs.add(subject);
+                List<Student> subjectStudents = subject.getSubjectStudents();
+                subjectStudents.add(student);
+                subject.setSubjectStudents(subjectStudents);
+                this.subjectRepository.save(subject);
+            }
+        }
+        if (!(Objects.equals(student.getStudentSubjects(), subs))) {
+            student.setStudentSubjects(subs);
+            this.studentRepository.save(student);
+        }
+        //Возврат объекта студента
+        return student;
+
     }
 }

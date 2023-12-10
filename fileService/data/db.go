@@ -55,29 +55,24 @@ func GetAllFilesRecords() []gridfsFile {
 	return foundFiles
 }
 
+//Функция для загрузки файлов в MongoDB GridFS
+//Принимает байт-массив данных из файла и имя файла
 func UploadFile(data []byte, filename string) primitive.ObjectID {
-
-	conn := InitMongoClient()
-	bucket, err := gridfs.NewBucket(
-		conn.Database("myfiles"),
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
+	conn := InitMongoClient()       //Инициализация подключения к mongodb
+	bucket, err := gridfs.NewBucket(conn.Database("myfiles"),)
+	if err != nil {log.Fatal(err)}  //Проверка на наличие ошибок
+	//Инициализация нового файла в хранилище
 	uploadStream, err := bucket.OpenUploadStream(
 		filename,
 	)
-	if err != nil {
-		fmt.Println(err)
-	}
+	if err != nil {fmt.Println(err)} //Проверка на наличие ошибок
 	defer uploadStream.Close()
-
+    //Запись байт-массива данных из файла в хранилище
 	fileSize, err := uploadStream.Write(data)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fileId := uploadStream.FileID
+	if err != nil {log.Fatal(err)} //Проверка на наличие ошибок
+	fileId := uploadStream.FileID   //Запись ID файла
 	log.Printf("Write file to DB was successful. File size: %d M\n", fileSize)
+	//Возврат ID файла
 	return fileId.(primitive.ObjectID)
 }
 
@@ -127,19 +122,21 @@ func DownloadFile(id string) []byte {
 	fmt.Printf("File size to download: %v\n", dStream)
 	//ioutil.WriteFile(fileName, buf.Bytes(), 0600)
 	return buf.Bytes()
-
 }
-
+//Функция для удаления файла из хранилища
 func DeleteFile(id string) {
+    //Подлкючение к хранилищу
 	conn := InitMongoClient()
+	//Поиск коллекции
 	collection := conn.Database("myfiles").Collection("fs.files")
+	//Таймаут операции
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	// Delete record
+	//Преобразование string ObjectID в ObjectID для драйвера MongoDB
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+	//Удаление записи
 	collection.FindOneAndDelete(ctx, bson.M{"_id": objectId})
-
 }

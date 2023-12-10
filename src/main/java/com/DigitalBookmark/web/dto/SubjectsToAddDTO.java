@@ -6,6 +6,6 @@ import java.util.List;
 
 @Data
 public class SubjectsToAddDTO {
-    private Long teacherId;
-    private List<Long> ids;
+    private Long userId;
+    private List<Long> subjectIds;
 }

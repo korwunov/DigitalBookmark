@@ -20,6 +20,9 @@ public class Student extends User{
     @OneToMany(mappedBy = "markOwner")
     private List<SubjectMarkRecord> marksList;
 
+    @ManyToMany(mappedBy = "subjectStudents")
+    private List<Subject> studentSubjects;
+
     @Override
     public String toString() {
         return this.getId().toString();

@@ -30,4 +30,8 @@ public class Subject {
     @ManyToMany(targetEntity = Teacher.class)
     @JsonIgnore
     private List<Teacher> subjectTeachers;
+
+    @ManyToMany
+    @JsonIgnore
+    private List<Student> subjectStudents;
 }

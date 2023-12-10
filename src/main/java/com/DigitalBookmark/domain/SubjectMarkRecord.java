@@ -1,5 +1,6 @@
 package com.DigitalBookmark.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,28 +8,37 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-@Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Table(name = "marks")
+import java.time.LocalDate;
+
+@Entity     //Обозначение сущности для Spring
+@Data       //Автоинициализация гетеров и сетеров для полей класса
+@AllArgsConstructor     //Автоинициализация конструктора со всеми параметрами
+@NoArgsConstructor      //Автоинициализация конструктора без параметров
+@Table(name = "marks")      //Имя таблицы в БД
 public class SubjectMarkRecord {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long markRecordId;
+    @Id     //Обозначение для поля с ID
+    @GeneratedValue(strategy = GenerationType.AUTO)     //Стратегия генерации ID
+    private Long id;    //ID оценки
 
+    //Обозначение отдельной колонки в таблице,
+    // параметр nullable устанавливает возможность отсутствия значения
     @Column(nullable = false)
-    private int markValue;
+    private int markValue;      //Значение оценки
 
-    @ManyToOne(targetEntity = Subject.class)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Subject markSubject;
+    @Column
+    private LocalDate markSetDate;  //Дата выставления оценки
 
+    @JsonIgnore     //Игнорирование поля при конвертации в JSON
+    @ManyToOne(targetEntity = Subject.class)    //Обозначение типа связи
+    @OnDelete(action = OnDeleteAction.CASCADE)  //Ссылочная целостность
+    private Subject markSubject;    //Предмет
+
+    @JsonIgnore
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Student markOwner;
+    private Student markOwner;      //Студент
 
     @ManyToOne(targetEntity = Teacher.class)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Teacher markGiver;
+    private Teacher markGiver;      //Преподаватель
 }

@@ -9,10 +9,12 @@ import com.DigitalBookmark.repositories.StudentRepository;
 import com.DigitalBookmark.repositories.SubjectMarkRepository;
 import com.DigitalBookmark.repositories.SubjectRepository;
 import com.DigitalBookmark.repositories.TeacherRepository;
+import com.DigitalBookmark.web.httpStatusesExceptions.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,26 +32,38 @@ public class MarkService {
     @Autowired
     private TeacherRepository teacherRepository;
 
-    public SubjectMarkRecord addMarkRecord(Long id, MarkDTO markDto) throws Exception {
-        Optional<Student> studentRecord = this.studentRepository.findById(id);
-        if (studentRecord.isEmpty()) throw new Exception("student not found");
-        SubjectMarkRecord mark = new SubjectMarkRecord();
-
+    public SubjectMarkRecord addMarkRecord(MarkDTO markDto) throws Exception {
         if (markDto.getMarkValue() > 5 || markDto.getMarkValue() < 2) {
             throw new Exception("bad mark value");
         }
-        mark.setMarkValue(markDto.getMarkValue());
-        mark.setMarkOwner(studentRecord.get());
+
+        Optional<Student> studentRecord = this.studentRepository.findById(markDto.getStudentId());
+        if (studentRecord.isEmpty()) throw new Exception("student not found");
 
         Optional<Teacher> markGiverRecord = this.teacherRepository.findById(markDto.getMarkGiverId());
         if (markGiverRecord.isEmpty()) throw new Exception("teacher not found");
-        mark.setMarkGiver(markGiverRecord.get());
 
         Optional<Subject> subjectRecord = this.subjectRepository.findById(markDto.getSubjectId());
-        if (subjectRecord.isEmpty()) throw new Exception("subject no found");
+        if (subjectRecord.isEmpty()) throw new Exception("subject not found");
+
         Subject subject = subjectRecord.get();
-        mark.setMarkSubject(subject);
+        Teacher teacher = markGiverRecord.get();
         Student student = studentRecord.get();
+
+        if (!(teacher.getTeacherSubjects().contains(subject))) {
+            throw new ForbiddenException("teacher with id " + teacher.getId() + " not allowed to set marks for subject " + subject.getName());
+        }
+
+        if (!(student.getStudentSubjects().contains(subject))) {
+            throw new ForbiddenException("student with id " + student.getId() + " not allowed to receive marks for subject "  + subject.getName());
+        }
+
+        SubjectMarkRecord mark = new SubjectMarkRecord();
+        mark.setMarkValue(markDto.getMarkValue());
+        mark.setMarkOwner(studentRecord.get());
+        mark.setMarkSubject(subject);
+        mark.setMarkGiver(teacher);
+
         List<SubjectMarkRecord> list = student.getMarksList();
         if (list == null) {
             list = new ArrayList<SubjectMarkRecord>();
@@ -63,6 +77,8 @@ public class MarkService {
         }
         list.add(mark);
         subject.setSubjectMarks(list);
+
+        mark.setMarkSetDate(LocalDate.now());
 
         this.subjectRepository.save(subject);
         this.studentRepository.save(student);

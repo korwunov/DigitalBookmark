@@ -31,26 +31,29 @@ func addNewFile(c *gin.Context) {
 }
 
 func deleteFile(c *gin.Context) {
+    //Получение параметров по имени
 	fileId := c.Params.ByName("id")
 	userId := c.Params.ByName("userId")
+	//Вызов метода из сервиса
 	middleware.DeleteFile(fileId, c.Writer, c.Request, userId)
 }
 
 func test(c *gin.Context) {
 	c.IndentedJSON(http.StatusAccepted, "here are go server")
 }
-
+//Главная функиця - точка входа в приложение
 func main() {
-	godotenv.Load()
+	godotenv.Load()     //Загрузка переменных окружения
 	fmt.Println(os.Getenv("MONGODB_URL"))
-	r := gin.Default()
-	api := r.Group("/files")
+	r := gin.Default()  //Инициализация роутера
+	api := r.Group("/files")    //Группировка роутера для запросов с /files
 	{
-		api.GET("", getFiles)
-		api.GET("/:id/:userId", getFileById)
-		api.POST("/:name/:userId", addNewFile)
-		api.DELETE("/:id/:userId", deleteFile)
+		api.GET("", getFiles)   //GET запрос на получение списка всех файлов
+		api.GET("/:id/:userId", getFileById)    //Скачивание файла по ID
+		api.POST("/:name/:userId", addNewFile)  //Загрузка файла
+		api.DELETE("/:id/:userId", deleteFile)  //Удаление файла
 		api.GET("/test", test)
 	}
+	//Запуск роутера, логирование в случае ошибки
 	log.Fatal(r.Run(":" + os.Getenv("APP_PORT")))
 }

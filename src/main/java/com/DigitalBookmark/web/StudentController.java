@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@Controller
-@Slf4j
-@RequestMapping("/api/students")
-@ResponseBody
+@Controller   //Обозначение класса контроллера для Spring
+@Slf4j        //Подключение логирования
+@RequestMapping("/api/students")    //Роутинг для запросов данного класса
+@ResponseBody //Обозначает, что HTTP обработчики данного класса должны возращать тело ответа
 public class StudentController {
     public StudentService studentService;
 
@@ -36,14 +36,18 @@ public class StudentController {
         //AuthResponseDTO authData = this.authService.auth(token);
         return studentService.getAllStudents();
     }
-
+    //Аннотация определяет этот метод как обработчик
+    //HTTP запроса GET с ID в переменной в пути
     @GetMapping("/{id}")
     public Optional<Student> getStudentById(@PathVariable Long id) {
+        //Если ID из пути запроса не определен, то вернуть 400
         if (id == null) throw new BadRequestException("no id in requets");
         try {
+            //Поиск и возврат информации о студенте по ID
             return studentService.getStudentByID(id);
         }
         catch (Exception e) {
+            //Если не удалось получиьт студента вернуть 404
             throw new NotFoundException(e.getMessage());
         }
     }

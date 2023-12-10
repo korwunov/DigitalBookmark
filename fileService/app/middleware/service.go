@@ -54,17 +54,27 @@ func AddFile(fileName string, w http.ResponseWriter, r *http.Request, userId str
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(fileId.Hex()))
 }
-
+//Проверка разрешения на удаление файла
 func DeleteFile(fileId string, w http.ResponseWriter, r *http.Request, userId string) {
+    //Вызов метода отправки сообщения в микросервис зачетной книжки
+    //Работает по паттерну RPC, в ответ возвращает true или false
 	isAllowed := isFileBelongsToUser(fileId, userId)
 	fmt.Println(isAllowed)
+	//Если удаление разрешено
 	if isAllowed {
+	    //Вызов метода удаления файла из хранилища
 		data.DeleteFile(fileId)
+		//Отправка информации об удалении файла в микросервис зачетной книжки
 		sendFileInfo("delete", userId, fileId)
+		//Запись статуса 200 в заголовок ответа
 		w.WriteHeader(http.StatusOK)
+	    //Запись тела ответа
 		w.Write([]byte("delete file with id " + fileId))
 	} else {
+	//Если удаление запрещено
+	    //Запись 403 в заголовок ответа
 		w.WriteHeader(http.StatusForbidden)
+		//Запись тела ответа
 		w.Write([]byte("you are not allowed to delete file of other user"))
 	}
 }

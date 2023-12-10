@@ -48,12 +48,14 @@ func deserialize(b []byte) (Message, error) {
 	return msg, err
 }
 
+//Метод отпарвки сообщения о загрузке/удалении файла
 func sendFileInfo(actionValue string, userIdValue string, fileIdValue string) {
+    //Получение данных для подключения к RabbitMQ
 	rabbitHost := os.Getenv("RABBITMQ_HOST")     //"localhost"
 	rabbitPort := os.Getenv("RABBITMQ_PORT")     //"5672"
 	rabbitUser := os.Getenv("RABBITMQ_USERNAME") //"guest"
 	rabbitPass := os.Getenv("RABBITMQ_PASSWORD") //"guest"
-
+    //Открытие соединения c брокером
 	conn, err := amqp.Dial("amqp://" +
 		rabbitUser + ":" +
 		rabbitPass + "@" +
@@ -63,12 +65,12 @@ func sendFileInfo(actionValue string, userIdValue string, fileIdValue string) {
 	if err != nil {
 		log.Fatalf("unable to open connect to RabbitMQ server. Error: %s", err)
 	}
-
+    //Открытие канала
 	channel, err := conn.Channel()
 	if err != nil {
 		log.Fatalf("failed to open channel. Error: %s", err)
 	}
-
+    //Инициализация очереди
 	q, err := channel.QueueDeclare(
 		"digitalbookmark_file_queue",
 		true,
@@ -77,7 +79,7 @@ func sendFileInfo(actionValue string, userIdValue string, fileIdValue string) {
 		false,
 		nil,
 	)
-
+    //Установка контекста с таймаутом отпарвки
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -88,19 +90,19 @@ func sendFileInfo(actionValue string, userIdValue string, fileIdValue string) {
 	fmt.Println(actionValue)
 	fmt.Println(userIdValue)
 	fmt.Println(fileIdValue)
-
+    //Метод отправки сообщения в очередь
 	err = channel.PublishWithContext(ctx,
 		"",
 		q.Name,
 		false,
 		false,
-		amqp.Publishing{
+		amqp.Publishing{    //Конвертация сообщения
 			ContentType: "application/json",
 			Body:        []byte(actionValue + ";" + userIdValue + ";" + fileIdValue)})
 
 	defer func() {
-		_ = channel.Close()
-		_ = conn.Close() // Закрываем подключение в случае удачной попытки
+		_ = channel.Close()     //Закрытие канала
+		_ = conn.Close()        //Закрытие подключения в случае удачной попытки
 	}()
 }
 
