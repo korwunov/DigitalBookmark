@@ -16,10 +16,17 @@ def get_data(array, name):
         arr.append(record[name])
     return arr
 
+
+def open_graph(folder):
+    file = open(folder + "/analitic.png")
+    data_uri = open(folder + '/analitic.png', 'rb').read().encode('base64').replace('\n', '')
+    img_tag = '<img src="data:image/png;base64,{0}">'.format(data_uri)
+    return img_tag
+    
 def find_graph(array):
     folder = f"/usr/src/app/analytics/upload/{array[0]['markSetDate']}_{array[len(array)-1]['markSetDate']}_{array[0]['id']}"
     if os.path.isdir(folder):
-        return folder+'/analitic.png'
+        return open_graph(folder)
     else:
         return create_graph(array, folder)
 
@@ -41,7 +48,7 @@ def create_graph(array, folder):
     os.mkdir(folder)
     plt.savefig(folder+'/analitic.png')
     plt.close()
-    return folder+'/analitic.png'    
+    return open_graph(folder)   
 
 
     
