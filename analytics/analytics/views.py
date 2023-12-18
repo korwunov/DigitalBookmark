@@ -18,7 +18,7 @@ def get_graph(request):
         if (r.status_code == 200):
             array = r.json()
             graph = analitics.find_graph(array)
-            img = '<img src='+"+graph+"+'/>'
+            img = '<img src='+'"'+graph+'"'+'/>'
             response = "<html><body><title>Ваш анализ</title> "+img+"</body></html>"
             return HttpResponse(response)
         else:
