@@ -1,8 +1,10 @@
 package com.DigitalBookmark.web;
 
 import com.DigitalBookmark.domain.Student;
+import com.DigitalBookmark.domain.SubjectMarkRecord;
 import com.DigitalBookmark.domain.Teacher;
 import com.DigitalBookmark.domain.User;
+import com.DigitalBookmark.services.MarkService;
 import com.DigitalBookmark.services.StudentService;
 import com.DigitalBookmark.services.UserService;
 import com.DigitalBookmark.web.dto.RoleDTO;
@@ -16,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @Slf4j
 @RequestMapping("/api/admin")
@@ -27,11 +31,15 @@ public class AdminController {
 
     public UserService userService;
 
+
+    public MarkService markService;
+
     @Autowired
-    public AdminController(TeacherService teacherService, StudentService studentService, UserService userService) {
+    public AdminController(TeacherService teacherService, StudentService studentService, UserService userService, MarkService markService) {
         this.teacherService = teacherService;
         this.studentService = studentService;
         this.userService = userService;
+        this.markService = markService;
     }
 
     @PutMapping("/addSubjectsForTeacher")
@@ -61,5 +69,14 @@ public class AdminController {
         catch (Exception e) {
             throw new ForbiddenException(e.getMessage());
         }
+    }
+
+    @GetMapping("/getMarksStat")
+    public List<SubjectMarkRecord> getMarksBySubjectAndDates(
+            @RequestParam Long id,
+            @RequestParam String dateFrom,
+            @RequestParam String dateTo
+    ) {
+        return this.markService.getMarksBySubjectAndDates(id, dateFrom, dateTo);
     }
 }

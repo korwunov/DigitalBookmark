@@ -10,6 +10,7 @@ import com.DigitalBookmark.repositories.SubjectMarkRepository;
 import com.DigitalBookmark.repositories.SubjectRepository;
 import com.DigitalBookmark.repositories.TeacherRepository;
 import com.DigitalBookmark.web.httpStatusesExceptions.ForbiddenException;
+import com.DigitalBookmark.web.httpStatusesExceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -84,5 +85,24 @@ public class MarkService {
         this.studentRepository.save(student);
         this.markRepository.save(mark);
         return mark;
+    }
+
+    public List<SubjectMarkRecord> getMarksBySubjectAndDates(Long subjectId, String dateFrom, String dateTo) {
+        Optional<Subject> subRecord = this.subjectRepository.findById(subjectId);
+        if (subRecord.isEmpty()) throw new NotFoundException("subject with this id not found");
+        Subject sub = subRecord.get();
+        Optional<List<SubjectMarkRecord>> marksRecords = this.markRepository.findByMarkSubject(sub);
+        if (marksRecords.isEmpty()) throw new NotFoundException("no data for this subject");
+        List<SubjectMarkRecord> marks = marksRecords.get();
+        LocalDate dateFromObj = LocalDate.parse(dateFrom);
+        LocalDate dateToObj = LocalDate.parse(dateTo);
+        List<SubjectMarkRecord> finalList = new ArrayList<SubjectMarkRecord>();
+        for (SubjectMarkRecord m : marks) {
+            if (m.getMarkSetDate().isAfter(dateFromObj) && m.getMarkSetDate().isBefore(dateToObj)) {
+                finalList.add(m);
+            }
+        }
+        if (finalList.size() == 0) throw new NotFoundException("no data for this dates");
+        return finalList;
     }
 }
