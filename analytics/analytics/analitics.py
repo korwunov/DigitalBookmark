@@ -19,7 +19,7 @@ def get_data(array, name):
 
 def open_graph(folder):
     file = open(folder + "/analitic.png")
-    data_uri = open(folder + '/analitic.png', 'rb').read().encode('base64').replace('\n', '')
+    data_uri = base64.b64encode(open(folder + '/analitic.png', 'rb').read()).decode('utf-8')
     img_tag = '<img src="data:image/png;base64,{0}">'.format(data_uri)
     return img_tag
     
