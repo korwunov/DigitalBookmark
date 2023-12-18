@@ -19,7 +19,7 @@ def get_data(array, name):
 def find_graph(array):
     folder = f"/usr/src/app/analytics/upload/{array[0]['markSetDate']}_{array[len(array)-1]['markSetDate']}_{array[0]['id']}"
     if os.path.isdir(folder):
-        return folder
+        return folder+'/analitic.png'
     else:
         return create_graph(array, folder)
 
@@ -41,8 +41,7 @@ def create_graph(array, folder):
     os.mkdir(folder)
     plt.savefig(folder+'/analitic.png')
     plt.close()
-    return folder
-    
+    return folder+'/analitic.png'    
 
 
     
