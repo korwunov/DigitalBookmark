@@ -37,6 +37,17 @@ services:
       - RABBITMQ_USERNAME=guest
       - RABBITMQ_PASSWORD=guest
 
+  analytics:
+    build:
+      dockerfile: ./analytics/Dockerfile
+    volumes:
+      - ./analytics:/usr/src/app
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "0.0.0.0:8000:8000"
+    environment:
+      - MAINHOST=http://app:8080
+
   rabbitmq:
     image: rabbitmq:3.13-rc-management
     container_name: rabbitmq
