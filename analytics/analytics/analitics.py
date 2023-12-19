@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import os
 import io
 import requests
+import base64
 
 def listToString(s):
     str1 = ""
@@ -44,7 +45,10 @@ def create_graph(array, folder):
     r = requests.get(url)
     subject = r.json()
     plt.title(subject['name'])
-    os.mkdir('/usr/src/app/analytics/upload')
+    try:
+        os.mkdir('/usr/src/app/analytics/upload')
+    except FileExistsError:
+        pass
     os.mkdir(folder)
     plt.savefig(folder+'/analitic.png')
     plt.close()
