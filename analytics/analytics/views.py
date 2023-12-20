@@ -17,7 +17,7 @@ def get_graph(request):
         r = requests.get(url, params=payload)
         if (r.status_code == 200):
             array = r.json()
-            graph = analitics.find_graph(array)
+            graph = analitics.find_graph(subject, array)
             response = "<html><body><title>Ваш анализ</title> "+graph+"</body></html>"
             return HttpResponse(response)
         else:

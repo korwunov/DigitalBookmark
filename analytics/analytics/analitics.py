@@ -8,7 +8,6 @@ def listToString(s):
     str1 = ""
     for ele in s:
         str1 += str(ele) + "."
-    print(str1)
     return str1[:-1]
 
 def get_data(array, name):
@@ -24,14 +23,14 @@ def open_graph(folder):
     img_tag = '<img src="data:image/png;base64,{0}">'.format(data_uri)
     return img_tag
     
-def find_graph(array):
+def find_graph(subject_id, array):
     folder = f"/usr/src/app/analytics/upload/{array[0]['markSetDate']}_{array[len(array)-1]['markSetDate']}_{array[0]['id']}"
     if os.path.isdir(folder):
         return open_graph(folder)
     else:
-        return create_graph(array, folder)
+        return create_graph(subject_id, array, folder)
 
-def create_graph(array, folder):
+def create_graph(subject_id, array, folder):
     x = get_data(array, 'markValue')
     ny = get_data(array, 'markSetDate')
     y = []
@@ -41,7 +40,10 @@ def create_graph(array, folder):
     plt.ylabel('Оценка')
     plt.ylim([1, 6])
     plt.xlabel('Дата')
-    url = os.environ.get('MAINHOST') +'/api/subjects/' + str(array[0]['id'])
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    print(str(array[0]['id']))
+    url = os.environ.get('MAINHOST') +'/api/subjects/' + str(subject_id)
     r = requests.get(url)
     subject = r.json()
     plt.title(subject['name'])
