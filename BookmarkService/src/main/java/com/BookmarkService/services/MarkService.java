@@ -12,7 +12,9 @@ import com.BookmarkService.repositories.TeacherRepository;
 import com.BookmarkService.web.httpStatusesExceptions.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -88,10 +90,10 @@ public class MarkService {
 
     public List<SubjectMarkRecord> getMarksBySubjectAndDates(Long subjectId, String dateFrom, String dateTo) {
         Optional<Subject> subRecord = this.subjectRepository.findById(subjectId);
-        if (subRecord.isEmpty()) throw new NotFoundException("subject with this id not found");
+        if (subRecord.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "subject with this id not found");
         Subject sub = subRecord.get();
         Optional<List<SubjectMarkRecord>> marksRecords = this.markRepository.findByMarkSubject(sub);
-        if (marksRecords.isEmpty()) throw new NotFoundException("no data for this subject");
+        if (marksRecords.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "no data for this subject");
         List<SubjectMarkRecord> marks = marksRecords.get();
         LocalDate dateFromObj = LocalDate.parse(dateFrom);
         LocalDate dateToObj = LocalDate.parse(dateTo);
@@ -101,7 +103,7 @@ public class MarkService {
                 finalList.add(m);
             }
         }
-        if (finalList.size() == 0) throw new NotFoundException("no data for this dates");
+        if (finalList.size() == 0) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "no data for this dates");
         return finalList;
     }
 }

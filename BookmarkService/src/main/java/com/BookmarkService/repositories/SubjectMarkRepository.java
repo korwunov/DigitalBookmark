@@ -1,5 +1,6 @@
 package com.BookmarkService.repositories;
 
+import com.BookmarkService.domain.Subject;
 import com.BookmarkService.domain.SubjectMarkRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;

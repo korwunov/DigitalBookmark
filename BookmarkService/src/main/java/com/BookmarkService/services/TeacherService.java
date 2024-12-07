@@ -19,7 +19,7 @@ import java.util.*;
 public class TeacherService {
 
     @Autowired  //Автопоиск и подставление Bean класса TeacherRepository
-    //Репозиторий БД с данными об учтелях
+    //Репозиторий БД с данными об учителях
     private TeacherRepository teacherRepository;
     @Autowired
     //Репозиторий БД с данными о предметах

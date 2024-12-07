@@ -22,13 +22,18 @@ public class AuthController {
         return authService.singIn(request);
     }
 
+    /**
+     * Пусть все пользователи могут регистрироваться, но потом только админ сможет подключить дисциплины к пользователям
+     * @param request
+     * @return TokenDto token
+     */
     @PostMapping("/registration")
     public TokenDto register(@RequestBody SignUpRequestDto request) {
         return authService.signUp(request);
     }
 
-    @PostMapping("/test")
-    public TokenDto test() {
-        return new TokenDto("fgdsgds");
-    }
+//    @PostMapping("/test")
+//    public TokenDto test() {
+//        return new TokenDto("fgdsgds");
+//    }
 }
