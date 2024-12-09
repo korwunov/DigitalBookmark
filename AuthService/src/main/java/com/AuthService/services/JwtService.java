@@ -18,8 +18,8 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    @Value("${token.singing.key}")
-    private String key;
+    //@Value("${token.singing.key}")
+    private final String key = "bjtf3213uh13ruhu3hruhu1u34hjjrtbjfbj2hj23kjk13jk13tjt8gjhngwhnrurw3yut12btu8g782hgbgu74u872848i24hgu22";
 
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);

@@ -1,17 +1,15 @@
 version: '2'
 
 services:
-  app:
-    image: 'docker-spring-boot-postgres:latest'
-    build:
-      context: .
-    container_name: app
+  bookmarkservice:
+    image: bookmark-service:0.0.1-SNAPSHOT
+    container_name: bookmarkservice
     depends_on:
       - db
-      - fileservice
       - rabbitmq
+      - authservice
     environment:
-      - POSTGRES_URL=jdbc:postgresql://db:5432/digitalbookmark
+      - POSTGRES_HOST=jdbc:postgresql://db:5432/digitalbookmark
       - POSTGRES_USER=digitalbookmark
       - POSTGRES_PASS=postgrePass
       - RABBITMQ_HOST=rabbitmq
@@ -20,33 +18,47 @@ services:
       - RABBITMQ_PASSWORD=guest
     ports:
       - "8080:8080"
+    networks:
+      - digitalbookmark
 
   fileservice:
-    build:
-      context: fileService
+    image: file-service:0.0.1-SNAPSHOT
+    container_name: fileservice
     ports:
-      - "4200:4200"
+      - "8082:8082"
     depends_on:
-      - mongo
+      - db
       - rabbitmq
+      - authservice
     environment:
-      - APP_PORT=4200
-      - MONGODB_URL=mongodb://mongo:27017
+      - POSTGRES_HOST=jdbc:postgresql://db:5432/digitalbookmark
+      - POSTGRES_USER=digitalbookmark
+      - POSTGRES_PASS=postgrePass
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_PORT=5672
       - RABBITMQ_USERNAME=guest
       - RABBITMQ_PASSWORD=guest
+    networks:
+      - digitalbookmark
 
-  analytics:
-    build:
-      dockerfile: ./analytics/Dockerfile
-    volumes:
-      - ./analytics:/usr/src/app
-    command: python manage.py runserver 0.0.0.0:8000
+  authservice:
+    image: auth-service:0.0.1-SNAPSHOT
+    container_name: authservice
     ports:
-      - "0.0.0.0:8000:8000"
+      - "8081:8081"
+    depends_on:
+      - db
+      - rabbitmq
     environment:
-      - MAINHOST=http://app:8080
+      - POSTGRES_HOST=jdbc:postgresql://db:5432/digitalbookmark
+      - POSTGRES_USER=digitalbookmark
+      - POSTGRES_PASS=postgrePass
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
+    networks:
+      - digitalbookmark
 
   rabbitmq:
     image: rabbitmq:3.13-rc-management
@@ -54,15 +66,17 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    networks:
+      - digitalbookmark
 
-  nginx:
-    image: nginx:latest
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - app
+#  nginx:
+#    image: nginx:latest
+#    ports:
+#      - "80:80"
+#    volumes:
+#      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+#    depends_on:
+#      - app
 
   db:
     image: 'postgres:15.1-alpine'
@@ -71,8 +85,8 @@ services:
       - POSTGRES_USER=digitalbookmark
       - POSTGRES_PASSWORD=postgrePass
       - POSTGRES_DB=digitalbookmark
+    networks:
+      - digitalbookmark
 
-  mongo:
-    image: mongo:latest
-    ports:
-      - "27017:27017"
+networks:
+  digitalbookmark:

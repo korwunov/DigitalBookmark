@@ -37,7 +37,7 @@ public class AuthContext {
         EROLE[] requiredRoles = auth.roles();
         System.out.println(requiredRoles);
 
-        String token = (String) Arrays.stream(joinPoint.getArgs()).toList().getFirst();
+        String token = (String) Arrays.stream(joinPoint.getArgs()).toList().get(0);
         User user = (User) this.template.convertSendAndReceive(exchangeName, authRoutingKeyName, token);
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "пошел нахуй чмо");

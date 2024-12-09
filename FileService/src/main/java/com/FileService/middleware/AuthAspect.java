@@ -10,13 +10,12 @@ import org.springframework.stereotype.Component;
 import com.BookmarkService.domain.User;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.Arrays;
-import java.util.List;
 
 
 @Aspect
 @Component
 @RequiredArgsConstructor
-public class AuthContext {
+public class AuthAspect {
     private final RabbitTemplate template;
 
     @Value("${rabbitmq.exchange.name}")
@@ -30,7 +29,7 @@ public class AuthContext {
 
     @Around("@annotation(com.FileService.middleware.Authentication)")
     public Object getUserData(ProceedingJoinPoint joinPoint) throws Throwable {
-        String token = (String) Arrays.stream(joinPoint.getArgs()).toList().getFirst();
+        String token = (String) Arrays.stream(joinPoint.getArgs()).toList().get(0);
         User user = (User) this.template.convertSendAndReceive(exchangeName, authRoutingKeyName, token);
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "пошел нахуй чмо");
