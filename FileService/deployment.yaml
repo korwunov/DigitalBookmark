@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: file
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: file
+  template:
+    metadata:
+      labels:
+        app: file
+    spec:
+      containers:
+        - name: file-service
+          image: file-service:0.0.1-SNAPSHOT
+          ports:
+            - containerPort: 8082
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: POSTGRES_HOST
+              value: "jdbc:postgresql://postgresql:5432/digitalbookmark"
+            - name: POSTGRES_USER
+              value: "digitalbookmark"
+            - name: POSTGRES_PASS
+              value: "postgrePass"
+            - name: RABBITMQ_HOST
+              value: "rabbitmq"
+            - name: RABBITMQ_PORT
+              value: "5672"
+            - name: RABBITMQ_USERNAME
+              value: "guest"
+            - name: RABBITMQ_PASSWORD
+              value: "guest"
