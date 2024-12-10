@@ -24,6 +24,7 @@ import java.util.Optional;
 
 @RestController
 @ResponseBody
+@RequestMapping("/files")
 public class FileController {
 
     @Autowired
