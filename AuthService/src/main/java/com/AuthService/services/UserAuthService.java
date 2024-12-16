@@ -2,11 +2,11 @@ package com.AuthService.services;
 
 import com.AuthService.domain.AuthUser;
 import com.BookmarkService.domain.EROLE;
-import com.BookmarkService.domain.Student;
-import com.BookmarkService.domain.Teacher;
-import com.BookmarkService.domain.User;
-import com.BookmarkService.repositories.StudentRepository;
-import com.BookmarkService.repositories.TeacherRepository;
+import com.AuthService.domain.Student;
+import com.AuthService.domain.Teacher;
+import com.AuthService.domain.AbstractUser;
+import com.AuthService.repositories.AuthTeacherRepository;
+import com.AuthService.repositories.AuthStudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,10 +19,10 @@ import java.util.Optional;
 @Service
 public class UserAuthService {
     @Autowired
-    private TeacherRepository teacherRepository;
+    private AuthTeacherRepository teacherRepository;
 
     @Autowired
-    private StudentRepository studentRepository;
+    private AuthStudentRepository studentRepository;
 
     public void create(AuthUser user) {
         if (
@@ -50,7 +50,7 @@ public class UserAuthService {
 
     }
 
-    public <T extends User> User getByUsername(String username) {
+    public <T extends AbstractUser> AbstractUser getByUsername(String username) {
         Optional<Student> studentRecord = studentRepository.findByUsername(username);
         Optional<Teacher> teacherRecord = teacherRepository.findByUsername(username);
         if (studentRecord.isEmpty() && teacherRecord.isEmpty()) {
@@ -71,7 +71,7 @@ public class UserAuthService {
         return this::getByUsername;
     }
 
-    public User getCurrentUser() throws Exception {
+    public AbstractUser getCurrentUser() throws Exception {
         // Получение имени пользователя из контекста Spring Security
         var username = SecurityContextHolder.getContext().getAuthentication().getName();
         return getByUsername(username);

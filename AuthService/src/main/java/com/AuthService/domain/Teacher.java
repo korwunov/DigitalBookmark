@@ -1,5 +1,7 @@
-package com.BookmarkService.domain;
+package com.AuthService.domain;
 
+import com.AuthService.domain.Subject;
+import com.AuthService.domain.SubjectMarkRecord;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,6 +10,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.Collection;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -17,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "teachers")
 @DiscriminatorValue("ROLE_TEACHER")
-public class Teacher extends User {
+public class Teacher extends AbstractUser {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "markGiver")
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -32,4 +37,28 @@ public class Teacher extends User {
         return this.getId().toString();
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

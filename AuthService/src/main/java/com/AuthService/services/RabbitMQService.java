@@ -1,6 +1,8 @@
 package com.AuthService.services;
 
-import com.BookmarkService.domain.User;
+import com.AuthService.domain.AbstractUser;
+import com.BookmarkService.domain.EROLE;
+import com.BookmarkService.domain.Teacher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -14,15 +16,16 @@ public class RabbitMQService {
     private final UserAuthService userAuthService;
 
     @RabbitListener(queues = "digitalbookmark_auth_queue")
-    public <T extends User> User authUserRequest(String token) {
+    public <T extends AbstractUser> AbstractUser authUserRequest(String token) {
         if (token.isBlank()) return null;
         try {
             String tokenWithoutType = new StringBuilder(token).substring(token.indexOf(" ") + 1, token.length());
             String username = jwtService.extractUserName(tokenWithoutType);
             System.out.println("username from token " + username);
-            User user = userAuthService.getByUsername(username);
+            AbstractUser user = userAuthService.getByUsername(username);
             if (user == null) { return null; }
             System.out.println(user);
+
             return user;
         }
         catch (Exception e) {

@@ -1,6 +1,5 @@
 package com.AuthService.domain;
 
-import com.BookmarkService.domain.User;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
@@ -32,7 +31,7 @@ import java.util.List;
 //                }
 //        )
 //)
-public class AuthUser extends User {
+public class AuthUser extends AbstractUser {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();

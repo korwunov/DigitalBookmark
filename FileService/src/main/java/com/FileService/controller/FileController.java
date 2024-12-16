@@ -3,11 +3,11 @@ package com.FileService.controller;
 import com.BookmarkService.domain.Student;
 import com.BookmarkService.domain.Teacher;
 import com.BookmarkService.domain.User;
-import com.BookmarkService.repositories.StudentRepository;
-import com.BookmarkService.repositories.TeacherRepository;
 import com.FileService.entities.FileEntity;
 import com.FileService.middleware.Authentication;
 import com.FileService.repositories.FileRepository;
+import com.FileService.repositories.FileStudentRepository;
+import com.FileService.repositories.FileTeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -31,10 +31,10 @@ public class FileController {
     public FileRepository fileRepository;
 
     @Autowired
-    public TeacherRepository teacherRepository;
+    public FileTeacherRepository teacherRepository;
 
     @Autowired
-    public StudentRepository studentRepository;
+    public FileStudentRepository studentRepository;
 
 //    @Authentication
 //    @PostMapping("/test")

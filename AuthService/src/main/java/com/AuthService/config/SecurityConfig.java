@@ -23,8 +23,6 @@ import java.util.List;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
-@EnableWebSecurity
-@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final UserAuthService userService;
@@ -41,9 +39,7 @@ public class SecurityConfig {
                     corsConfiguration.setAllowCredentials(true);
                     return corsConfiguration;
                 }))
-                .authorizeHttpRequests(request -> request
-                        .requestMatchers("/registration").permitAll()
-                        .requestMatchers("/login").permitAll()
+                .authorizeHttpRequests((request) -> request
                         .anyRequest().permitAll()
                 )
                         // Можно указать конкретный путь, * - 1 уровень вложенности, ** - любое количество уровней вложенности

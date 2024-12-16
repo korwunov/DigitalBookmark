@@ -1,9 +1,11 @@
-package com.BookmarkService.domain;
+package com.AuthService.domain;
 
+import com.BookmarkService.domain.EROLE;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
@@ -13,7 +15,7 @@ import java.util.List;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @DiscriminatorColumn(name = "role")
-public abstract class User {
+public abstract class AbstractUser implements UserDetails {
     @Id
     @SequenceGenerator(name = "SEQ", sequenceName = "CUSTOM_SEQ", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CUSTOM_SEQ")
