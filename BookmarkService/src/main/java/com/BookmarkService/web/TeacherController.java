@@ -32,7 +32,7 @@ public class TeacherController {
         this.markService = markService;
     }
 
-    @Authentication(roles = {EROLE.ROLE_TEACHER})
+    @Authentication(roles = {EROLE.ROLE_STUDENT, EROLE.ROLE_TEACHER})
     @GetMapping
     public List<Teacher> getAllTeachers(@RequestHeader("Authorization") String token, Object user) {
         return this.teacherService.getAllTeachers();
