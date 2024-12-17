@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 @SpringBootApplication
-@ComponentScan(
-        basePackages = {"com.AuthService", "com.BookmarkService"}
-)
+//@ComponentScan(
+//        basePackages = {"com.AuthService", "com.BookmarkService"}
+//)
 @EntityScan({"com.AuthService", "com.BookmarkService"})
 @EnableWebSecurity
 @EnableJpaRepositories

@@ -9,9 +9,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
-@ComponentScan(
-		basePackages = {"com.FileService", "com.BookmarkService"}
-)
+//@ComponentScan(
+//		basePackages = {"com.FileService", "com.BookmarkService"}
+//)
 @EntityScan({"com.FileService", "com.BookmarkService"})
 @EnableJpaRepositories
 public class FileServiceApplication {
