@@ -1,6 +1,8 @@
 package com.BookmarkService.web;
 
+import com.BookmarkService.domain.EROLE;
 import com.BookmarkService.domain.Subject;
+import com.BookmarkService.middleware.Authentication;
 import com.BookmarkService.web.dto.SubjectDTO;
 import com.BookmarkService.services.SubjectService;
 import com.BookmarkService.web.httpStatusesExceptions.BadRequestException;
@@ -24,6 +26,7 @@ public class SubjectController {
         this.subjectService = subjectService;
     }
 
+    @Authentication(roles = {EROLE.ROLE_ADMIN})
     @PostMapping
     public Subject addSubject(@RequestBody SubjectDTO s) {
         try {
@@ -34,11 +37,13 @@ public class SubjectController {
         }
     }
 
+    @Authentication(roles = {EROLE.ROLE_TEACHER, EROLE.ROLE_STUDENT})
     @GetMapping
     public List<Subject> getAllSubjects() {
         return this.subjectService.getAllSubjects();
     }
 
+    @Authentication(roles = {EROLE.ROLE_TEACHER, EROLE.ROLE_STUDENT})
     @GetMapping("/{id}")
     public Subject getSubjectById(@PathVariable Long id) {
         try {
@@ -49,6 +54,7 @@ public class SubjectController {
         }
     }
 
+    @Authentication(roles = {EROLE.ROLE_ADMIN})
     @DeleteMapping("/{id}")
     public Subject deleteSubjectById(@PathVariable Long id) {
         try {

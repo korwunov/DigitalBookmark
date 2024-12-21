@@ -111,6 +111,13 @@ public class FileController {
     }
 
     @Authentication
+    @GetMapping
+    public List<FileEntity> getAllUserFiles(@RequestHeader("Authorization") String token, Object user) {
+        User u = (User) user;
+        return fileRepository.findAllById(u.getFilesID());
+    }
+
+    @Authentication
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Object> deleteFileById(@RequestHeader("Authorization") String token, Object user, @PathVariable Long id) {
         if (((User) user).getFilesID() == null || !(((User) user).getFilesID().contains(id))) {

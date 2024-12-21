@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class, ManagementWebSecurityAutoConfiguration.class })
 //@ComponentScan(
-//		basePackages = {"com.FileService", "com.BookmarkService"}
+//		basePackages = {"com.FileService", "com.BookmarkService.domain"}
 //)
 @EntityScan({"com.FileService", "com.BookmarkService"})
 @EnableJpaRepositories

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: graylog
+spec:
+  selector:
+    app: graylog
+  ports:
+    - name: http
+      port: 9000
+      targetPort: 9000
+    - name: tcp-logs
+      port: 12201
+      targetPort: 12201
+  type: LoadBalancer

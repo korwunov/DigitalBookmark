@@ -8,7 +8,7 @@
     </appender>
     <appender name="graylog" class="org.graylog2.log.GelfAppender">
         <param name="graylogHost" value="graylog"/>
-        <param name="originHost" value="app"/>
+        <param name="originHost" value="bookmark"/>
         <param name="graylogPort" value="12201"/>
         <param name="extractStacktrace" value="true"/>
         <param name="addExtendedInformation" value="true"/>

@@ -1,6 +1,8 @@
 package com.BookmarkService.web;
 
+import com.BookmarkService.domain.EROLE;
 import com.BookmarkService.domain.Student;
+import com.BookmarkService.middleware.Authentication;
 import com.BookmarkService.services.StudentService;
 import com.BookmarkService.web.httpStatusesExceptions.BadRequestException;
 import com.BookmarkService.web.httpStatusesExceptions.NotFoundException;
@@ -25,6 +27,7 @@ public class StudentController {
         this.studentService = studentService;
     }
 
+    @Authentication(roles = {EROLE.ROLE_TEACHER, EROLE.ROLE_STUDENT})
     @GetMapping
     public List<Student> getStudents() {//@RequestHeader("Authorization") String token) {
         //AuthResponseDTO authData = this.authService.auth(token);
@@ -32,6 +35,7 @@ public class StudentController {
     }
     //Аннотация определяет этот метод как обработчик
     //HTTP запроса GET с ID в переменной в пути
+    @Authentication(roles = {EROLE.ROLE_TEACHER, EROLE.ROLE_STUDENT})
     @GetMapping("/{id}")
     public Optional<Student> getStudentById(@PathVariable Long id) {
         //Если ID из пути запроса не определен, то вернуть 400
@@ -46,17 +50,18 @@ public class StudentController {
         }
     }
 
-    @PostMapping
-    public HttpStatus addStudent(@RequestBody Student u) {
-        try {
-            studentService.addStudent(u);
-            return HttpStatus.CREATED;
-        }
-        catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
-        }
-    }
+//    @PostMapping
+//    public HttpStatus addStudent(@RequestBody Student u) {
+//        try {
+//            studentService.addStudent(u);
+//            return HttpStatus.CREATED;
+//        }
+//        catch (Exception e) {
+//            throw new BadRequestException(e.getMessage());
+//        }
+//    }
 
+    @Authentication(roles = {EROLE.ROLE_STUDENT})
     @DeleteMapping("/{id}")
     public HttpStatus deleteStudent(@PathVariable Long id) {
         try {
