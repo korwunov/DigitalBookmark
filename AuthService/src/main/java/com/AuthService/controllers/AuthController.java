@@ -31,9 +31,4 @@ public class AuthController {
     public TokenDto register(@RequestBody SignUpRequestDto request) {
         return authService.signUp(request);
     }
-
-//    @PostMapping("/test")
-//    public TokenDto test() {
-//        return new TokenDto("fgdsgds");
-//    }
 }

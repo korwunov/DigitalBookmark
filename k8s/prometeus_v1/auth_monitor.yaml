@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    name: auth-monitoring
+  name: auth-monitoring
+spec:
+  selector:
+    matchLabels:
+      app: auth
+  endpoints:
+    - path: /actuator/prometheus
+      port: "8081"
+      scheme: http
+      interval: 5s

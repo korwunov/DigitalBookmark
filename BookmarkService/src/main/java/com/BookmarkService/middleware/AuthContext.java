@@ -40,7 +40,7 @@ public class AuthContext {
         String token = (String) Arrays.stream(joinPoint.getArgs()).toList().get(0);
         User user = (User) this.template.convertSendAndReceive(exchangeName, authRoutingKeyName, token);
         if (user == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "пошел нахуй чмо");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         if (user.getRole() == EROLE.ROLE_ADMIN) {
             joinPoint.getArgs()[1] = user;

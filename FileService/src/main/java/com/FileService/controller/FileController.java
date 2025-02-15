@@ -3,11 +3,12 @@ package com.FileService.controller;
 import com.BookmarkService.domain.Student;
 import com.BookmarkService.domain.Teacher;
 import com.BookmarkService.domain.User;
-import com.BookmarkService.repositories.StudentRepository;
-import com.BookmarkService.repositories.TeacherRepository;
+import com.FileService.repositories.StudentRepository;
+import com.FileService.repositories.TeacherRepository;
 import com.FileService.entities.FileEntity;
 import com.FileService.middleware.Authentication;
 import com.FileService.repositories.FileRepository;
+import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import java.util.Optional;
 @RestController
 @ResponseBody
 @RequestMapping("/files")
+@Log4j
 public class FileController {
 
     @Autowired
@@ -76,6 +78,7 @@ public class FileController {
                 ((User) user).setFilesID(userFiles);
                 if (user instanceof Teacher) { teacherRepository.save((Teacher) user); }
                 if (user instanceof Student) { studentRepository.save((Student) user); }
+                log.info("File created, id: " + f.getId() + ", owner id: " + f.getFileOwner() + ", file name: " + f.getFileName());
                 return new ResponseEntity<>(HttpStatus.OK);
 
             } catch (Exception e) {
@@ -105,6 +108,13 @@ public class FileController {
         else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @Authentication
+    @GetMapping
+    public List<FileEntity> getAllUserFiles(@RequestHeader("Authorization") String token, Object user) {
+        User u = (User) user;
+        return fileRepository.findAllById(u.getFilesID());
     }
 
     @Authentication

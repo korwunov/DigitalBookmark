@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+
+    scrape_configs:
+      - job_name: 'prometheus'
+        static_configs:
+          - targets: ['prometheus.default:9090']
+    
+      - job_name: 'postgres-exporter'
+        static_configs:
+          - targets: ['postgres-exporter.default:9187']
+    
+      - job_name: 'auth-service-exporter'
+        metrics_path: /actuator/prometheus
+        scrape_interval: 5s
+        static_configs:
+          - targets: ['auth-service.default:8081']
+    
+      - job_name: 'file-service-exporter'
+        metrics_path: /actuator/prometheus
+        scrape_interval: 5s
+        static_configs:
+          - targets: ['file-service.default:8082']
+    
+      - job_name: 'bookmark-service-exporter'
+        metrics_path: /actuator/prometheus
+        scrape_interval: 5s
+        static_configs:
+          - targets: ['bookmark-service.default:8080']
