@@ -17,12 +17,6 @@ public class RabbitMQConfig {
 
     @Value("${rabbitmq.login.queue.name}")
     private String loginQueueName;
-    //Получение значения из файла application.propetries
-//    @Value("${rabbitmq.file.queue.name}")
-//    private String fileInfoQueueName;   //Очередь для информации о файлах
-//
-//    @Value("${rabbitmq.file.permission.queue.name}")
-//    private String filePermissionQueueName;     //Очередь для информации о доступе к файлам
 
     @Value("${rabbitmq.exchange.name}")
     private String exchangeName;    //Имя exchange pool
@@ -33,23 +27,12 @@ public class RabbitMQConfig {
     @Value("${rabbitmq.login.routing_key.name}")
     private String loginRoutingKeyName;
 
-//    @Value("${rabbitmq.file.routing_key.name}")
-//    private String fileInfoRoutingKeyName;  //Routing key для очереди
-//
-//    @Value("${rabbitmq.file.permission.routing_key.name}")
-//    private String filePermissionRoutingKeyName;
-
     @Bean
     public Queue authQueue() { return new Queue(authQueueName); }
 
     @Bean
     public Queue loginQueue() { return new Queue(loginQueueName); }
-    //Инициализация новой очереди
-//    @Bean
-//    public Queue fileInfoQueue() { return new Queue(fileInfoQueueName); }
-//
-//    @Bean
-//    public Queue filePermissionQueue() { return new Queue(filePermissionQueueName); }
+
     //Инициализация exchange
     @Bean
     public TopicExchange exchange() {
@@ -67,18 +50,6 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(loginQueue())
                 .to(exchange()).with(loginRoutingKeyName);
     }
-    //Маппинг очереди, exchange и routing key
-//    @Bean
-//    public Binding fileInfoBinding() {
-//        return BindingBuilder.bind(fileInfoQueue())
-//                .to(exchange()).with(fileInfoRoutingKeyName);
-//    }
-//
-//    @Bean
-//    public Binding filePermissionBinding() {
-//        return BindingBuilder.bind(filePermissionQueue()).
-//                to(exchange()).with(filePermissionRoutingKeyName);
-//    }
 
     @Bean
     public MessageConverter converter() {

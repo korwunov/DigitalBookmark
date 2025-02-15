@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: prometheus-server
+  name: prometheus
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: prometheus-server
+      app: prometheus
   template:
     metadata:
       labels:
-        app: prometheus-server
+        app: prometheus
     spec:
       containers:
         - name: prometheus
-          image: prom/prometheus
+          image: prom/prometheus:latest
           ports:
             - containerPort: 9090
           volumeMounts:
@@ -23,5 +23,4 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: prometheus-server-conf
-            defaultMode: 420
+            name: prometheus-config

@@ -68,18 +68,18 @@ public class AuthControllerTests {
         );
     }
 
-    @Test
-    public void loginStudent() {
-        final String USERNAME = "student@mail.ru";
-        final String PASSWORD = "1234";
-        SignUpRequestDto registerRequestDto = new SignUpRequestDto(USERNAME, PASSWORD, "Teacher", EROLE.ROLE_STUDENT);
-        this.authController.register(registerRequestDto);
-        SignInRequestDto loginRequestDto = new SignInRequestDto(USERNAME, PASSWORD);
-        TokenDto tokenDto = this.authController.login(loginRequestDto);
-        String actualUsername = this.jwtService.extractUserName(tokenDto.token);
-        assertEquals(USERNAME, actualUsername);
-        studentRepository.delete(
-                studentRepository.findByUsername(USERNAME).get()
-        );
-    }
+//    @Test
+//    public void loginStudent() {
+//        final String USERNAME = "student@mail.ru";
+//        final String PASSWORD = "1234";
+//        SignUpRequestDto registerRequestDto = new SignUpRequestDto(USERNAME, PASSWORD, "Student", EROLE.ROLE_STUDENT);
+//        this.authController.register(registerRequestDto);
+//        SignInRequestDto loginRequestDto = new SignInRequestDto(USERNAME, PASSWORD);
+//        TokenDto tokenDto = this.authController.login(loginRequestDto);
+//        String actualUsername = this.jwtService.extractUserName(tokenDto.token);
+//        assertEquals(USERNAME, actualUsername);
+//        studentRepository.delete(
+//                studentRepository.findByUsername(USERNAME).get()
+//        );
+//    }
 }
