@@ -12,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -27,7 +28,7 @@ public class Teacher extends User {
     @JsonIgnore
     private List<SubjectMarkRecord> givenMarks;
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "subjectTeachers")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "subjectTeachers", cascade = CascadeType.ALL)
     private List<Subject> teacherSubjects;
 
     @Override
@@ -35,26 +36,31 @@ public class Teacher extends User {
         return this.getId().toString();
     }
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return true;

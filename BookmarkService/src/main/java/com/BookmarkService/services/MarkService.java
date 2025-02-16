@@ -9,7 +9,9 @@ import com.BookmarkService.repositories.StudentRepository;
 import com.BookmarkService.repositories.SubjectMarkRepository;
 import com.BookmarkService.repositories.SubjectRepository;
 import com.BookmarkService.repositories.TeacherRepository;
+import com.BookmarkService.web.httpStatusesExceptions.BadRequestException;
 import com.BookmarkService.web.httpStatusesExceptions.ForbiddenException;
+import com.BookmarkService.web.httpStatusesExceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,19 +36,19 @@ public class MarkService {
     @Autowired
     private TeacherRepository teacherRepository;
 
-    public SubjectMarkRecord addMarkRecord(MarkDTO markDto) throws Exception {
+    public SubjectMarkRecord addMarkRecord(Teacher markGiver, MarkDTO markDto) {
         if (markDto.getMarkValue() > 5 || markDto.getMarkValue() < 2) {
-            throw new Exception("bad mark value");
+            throw new BadRequestException("bad mark value");
         }
 
         Optional<Student> studentRecord = this.studentRepository.findById(markDto.getStudentId());
-        if (studentRecord.isEmpty()) throw new Exception("student not found");
+        if (studentRecord.isEmpty()) throw new NotFoundException("student not found");
 
-        Optional<Teacher> markGiverRecord = this.teacherRepository.findById(markDto.getMarkGiverId());
-        if (markGiverRecord.isEmpty()) throw new Exception("teacher not found");
+        Optional<Teacher> markGiverRecord = this.teacherRepository.findById(markGiver.getId());
+        if (markGiverRecord.isEmpty()) throw new NotFoundException("teacher not found");
 
         Optional<Subject> subjectRecord = this.subjectRepository.findById(markDto.getSubjectId());
-        if (subjectRecord.isEmpty()) throw new Exception("subject not found");
+        if (subjectRecord.isEmpty()) throw new NotFoundException("subject not found");
 
         Subject subject = subjectRecord.get();
         Teacher teacher = markGiverRecord.get();
@@ -58,6 +60,10 @@ public class MarkService {
 
         if (!(student.getStudentSubjects().contains(subject))) {
             throw new ForbiddenException("student with id " + student.getId() + " not allowed to receive marks for subject "  + subject.getName());
+        }
+
+        if (student.getGroup() == null) {
+            throw new ForbiddenException(String.format("student with id %s is not assigned to any group", student.getId()));
         }
 
         SubjectMarkRecord mark = new SubjectMarkRecord();
@@ -103,7 +109,7 @@ public class MarkService {
                 finalList.add(m);
             }
         }
-        if (finalList.size() == 0) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "no data for this dates");
+        if (finalList.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "no data for this dates");
         return finalList;
     }
 }

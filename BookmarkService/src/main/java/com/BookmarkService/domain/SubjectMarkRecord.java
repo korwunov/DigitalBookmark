@@ -17,7 +17,8 @@ import java.time.LocalDate;
 @Table(name = "marks")      //Имя таблицы в БД
 public class SubjectMarkRecord {
     @Id     //Обозначение для поля с ID
-    @GeneratedValue(strategy = GenerationType.AUTO)     //Стратегия генерации ID
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mark_generator")     //Стратегия генерации ID
+    @SequenceGenerator(name = "mark_generator", sequenceName = "marks_seq", allocationSize = 1)
     private Long id;    //ID оценки
 
     //Обозначение отдельной колонки в таблице,

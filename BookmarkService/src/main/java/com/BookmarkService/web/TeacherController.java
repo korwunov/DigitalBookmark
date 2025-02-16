@@ -69,11 +69,6 @@ public class TeacherController {
     @Authentication(roles = {EROLE.ROLE_TEACHER})
     @PostMapping("/setMark")
     public SubjectMarkRecord addMark(@RequestHeader("Authorization") String token, Object user, @RequestBody MarkDTO mark) {
-        try {
-            return this.markService.addMarkRecord(mark);
-        }
-        catch (Exception e) {
-            throw new NotFoundException(e.getMessage());
-        }
+        return this.markService.addMarkRecord((Teacher) user, mark);
     }
 }

@@ -3,8 +3,7 @@ package com.BookmarkService.web.dto;
 import lombok.Data;
 
 @Data
-public class MarkDTO {
+public class GroupAssignmentDto {
     private Long studentId;
-    private Long subjectId;
-    private int markValue;
+    private Long groupId;
 }

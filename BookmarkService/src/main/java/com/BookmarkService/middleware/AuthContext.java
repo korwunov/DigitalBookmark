@@ -35,7 +35,7 @@ public class AuthContext {
     public Object getUserData(ProceedingJoinPoint joinPoint) throws Throwable {
         Authentication auth = ((MethodSignature) joinPoint.getSignature()).getMethod().getAnnotation(Authentication.class);
         EROLE[] requiredRoles = auth.roles();
-        System.out.println(requiredRoles);
+        System.out.println(Arrays.toString(requiredRoles));
 
         String token = (String) Arrays.stream(joinPoint.getArgs()).toList().get(0);
         User user = (User) this.template.convertSendAndReceive(exchangeName, authRoutingKeyName, token);

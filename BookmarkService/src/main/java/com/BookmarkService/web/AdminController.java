@@ -1,15 +1,13 @@
 package com.BookmarkService.web;
 
-import com.BookmarkService.domain.Student;
-import com.BookmarkService.domain.Teacher;
-import com.BookmarkService.domain.User;
+import com.BookmarkService.domain.*;
+import com.BookmarkService.middleware.Authentication;
 import com.BookmarkService.services.StudentService;
 import com.BookmarkService.services.UserService;
 import com.BookmarkService.web.dto.RoleDTO;
 import com.BookmarkService.web.dto.SubjectsToAddDTO;
 import com.BookmarkService.services.TeacherService;
 import com.BookmarkService.services.MarkService;
-import com.BookmarkService.domain.SubjectMarkRecord;
 import com.BookmarkService.web.httpStatusesExceptions.ForbiddenException;
 import com.BookmarkService.web.httpStatusesExceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -24,54 +22,29 @@ import java.util.List;
 @RequestMapping("/api/admin")
 @ResponseBody
 public class AdminController {
-    public TeacherService teacherService;
-
-    public StudentService studentService;
 
     public UserService userService;
-
 
     public MarkService markService;
 
     @Autowired
-    public AdminController(TeacherService teacherService, StudentService studentService, UserService userService, MarkService markService) {
-        this.teacherService = teacherService;
-        this.studentService = studentService;
+    public AdminController(UserService userService, MarkService markService) {
         this.userService = userService;
         this.markService = markService;
     }
 
-    @PutMapping("/addSubjectsForTeacher")
-    public Teacher addSubjectsForTeacher(@RequestBody SubjectsToAddDTO subjectsInfo) {
-        try {
-            return this.teacherService.addSubjectsToTeacher(subjectsInfo);
-        }
-        catch (Exception e) {
-            throw new NotFoundException(e.getMessage());
-        }
-    }
-
-    @PutMapping("/addSubjectForStudent")
-    public Student addSubjectForStudent(@RequestBody SubjectsToAddDTO subjectsInfo) {
-        try {
-            return this.studentService.addSubjectToStudent(subjectsInfo);
-        } catch (Exception e) {
-            throw new NotFoundException(e.getMessage());
-        }
-    }
-
     @PutMapping("/setRole")
-    public User setRole(@RequestBody RoleDTO roleInfo) {
-        try {
-            return this.userService.setRole(roleInfo);
-        }
-        catch (Exception e) {
-            throw new ForbiddenException(e.getMessage());
-        }
+    @Authentication(roles = {EROLE.ROLE_ADMIN})
+    public User setRole(@RequestHeader("Authorization") String token, Object user, @RequestBody RoleDTO roleInfo) {
+        return this.userService.setRole(roleInfo);
+
     }
 
     @GetMapping("/getMarksStat")
+    @Authentication(roles = {EROLE.ROLE_ADMIN})
     public List<SubjectMarkRecord> getMarksBySubjectAndDates(
+            @RequestHeader("Authorization") String token,
+            Object user,
             @RequestParam Long id,
             @RequestParam String dateFrom,
             @RequestParam String dateTo

@@ -51,36 +51,4 @@ public class StudentService {
             throw new Exception("user not found");
         }
     }
-
-    @Transactional
-    public Student addSubjectToStudent(SubjectsToAddDTO subjects) throws Exception {
-        Optional<Student> studentRecord = this.studentRepository.findById(subjects.getUserId());
-        if (studentRecord.isEmpty()) throw new NotFoundException("student not found");
-        Student student = studentRecord.get();
-
-        List<Subject> subs = student.getStudentSubjects();
-        if (subs == null) {
-            subs = new ArrayList<Subject>();
-        }
-
-        for (Long id : subjects.getSubjectIds()) {
-            Optional<Subject> subjectRecord = this.subjectRepository.findById(id);
-            if (subjectRecord.isEmpty()) throw new NotFoundException("subject with id " + id + " not found");
-            Subject subject = subjectRecord.get();
-            if (!(subs.contains(subject))) {
-                subs.add(subject);
-                List<Student> subjectStudents = subject.getSubjectStudents();
-                subjectStudents.add(student);
-                subject.setSubjectStudents(subjectStudents);
-                this.subjectRepository.save(subject);
-            }
-        }
-        if (!(Objects.equals(student.getStudentSubjects(), subs))) {
-            student.setStudentSubjects(subs);
-            this.studentRepository.save(student);
-        }
-        //Возврат объекта студента
-        return student;
-
-    }
 }

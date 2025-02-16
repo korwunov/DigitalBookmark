@@ -1,5 +1,6 @@
 package com.BookmarkService.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,8 +17,8 @@ import java.util.List;
 @DiscriminatorColumn(name = "role")
 public abstract class User implements UserDetails {
     @Id
-    @SequenceGenerator(name = "SEQ", sequenceName = "CUSTOM_SEQ", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CUSTOM_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_generator")
+    @SequenceGenerator(name = "user_generator", sequenceName = "users_seq", allocationSize = 1)
     private Long id;
 
     @Column(nullable = false)
@@ -26,6 +27,7 @@ public abstract class User implements UserDetails {
     @Column(name = "username", nullable = false)
     private String username;
 
+    @JsonIgnore
     @Column(name = "password", nullable = false)
     private String password;
 

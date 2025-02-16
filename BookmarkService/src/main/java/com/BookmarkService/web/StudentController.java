@@ -29,7 +29,7 @@ public class StudentController {
 
     @Authentication(roles = {EROLE.ROLE_TEACHER, EROLE.ROLE_STUDENT})
     @GetMapping
-    public List<Student> getStudents() {//@RequestHeader("Authorization") String token) {
+    public List<Student> getStudents(@RequestHeader("Authorization") String token, Object user) {//@RequestHeader("Authorization") String token) {
         //AuthResponseDTO authData = this.authService.auth(token);
         return studentService.getAllStudents();
     }
@@ -37,7 +37,7 @@ public class StudentController {
     //HTTP запроса GET с ID в переменной в пути
     @Authentication(roles = {EROLE.ROLE_TEACHER, EROLE.ROLE_STUDENT})
     @GetMapping("/{id}")
-    public Optional<Student> getStudentById(@PathVariable Long id) {
+    public Optional<Student> getStudentById(@RequestHeader("Authorization") String token, Object user, @PathVariable Long id) {
         //Если ID из пути запроса не определен, то вернуть 400
         if (id == null) throw new BadRequestException("no id in requets");
         try {
@@ -61,9 +61,9 @@ public class StudentController {
 //        }
 //    }
 
-    @Authentication(roles = {EROLE.ROLE_STUDENT})
+    @Authentication(roles = {EROLE.ROLE_ADMIN})
     @DeleteMapping("/{id}")
-    public HttpStatus deleteStudent(@PathVariable Long id) {
+    public HttpStatus deleteStudent(@RequestHeader("Authorization") String token, Object user, @PathVariable Long id) {
         try {
             studentService.deleteStudent(id);
             return HttpStatus.OK;

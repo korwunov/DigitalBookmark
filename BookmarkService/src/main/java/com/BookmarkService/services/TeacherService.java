@@ -7,6 +7,7 @@ import com.BookmarkService.repositories.SubjectRepository;
 import com.BookmarkService.repositories.TeacherRepository;
 import com.BookmarkService.web.dto.SubjectsToAddDTO;
 import com.BookmarkService.web.httpStatusesExceptions.BadRequestException;
+import com.BookmarkService.web.httpStatusesExceptions.NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,40 +59,4 @@ public class TeacherService {
         return t.get();
     }
 
-    //Метод для добавления учителю нового предмета
-    @Transactional
-    public Teacher addSubjectsToTeacher(SubjectsToAddDTO subjects) throws Exception {
-        //Проверка на наличие учителя с нужным ID в БД
-        Optional<Teacher> teacherRecord = this.teacherRepository.findById(subjects.getUserId());
-        if (teacherRecord.isEmpty()) throw new Exception("teacher not found");
-        Teacher teacher = teacherRecord.get();
-        //Получение всех предметов учителя
-        List<Subject> subs = teacher.getTeacherSubjects();
-        if (subs == null) {     //Если список предметов не определен, то создаем новый
-            subs = new ArrayList<Subject>();
-        }
-
-        for (Long id : subjects.getSubjectIds()) {     //Перебор ID из запроса
-            //Поиск предмета по ID
-            Subject subject = this.subjectRepository.findById(id).get();
-            //Если список предметов преподавателя не содержит предмета из массива
-            if (!(subs.contains(subject))) {
-                subs.add(subject);    //Добавляем предмет в массив предметов преподавателя
-                //Получаем список учителей для предмета
-                List<Teacher> teachers = subject.getSubjectTeachers();
-                //Добавляем учителя к предмету
-                teachers.add(teacher);
-                subject.setSubjectTeachers(teachers);
-                this.subjectRepository.save(subject);
-            }
-        }
-        //Если списки предметов до и после обработки массива ID не совпадают,
-        //то записываем новый список к учителю в массив
-        if (!(Objects.equals(teacher.getTeacherSubjects(), subs))) {
-            teacher.setTeacherSubjects(subs);
-            this.teacherRepository.save(teacher);
-        }
-        //Возврат объекта учителя
-        return teacher;
-    }
 }

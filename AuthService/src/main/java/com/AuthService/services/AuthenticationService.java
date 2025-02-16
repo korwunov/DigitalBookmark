@@ -3,6 +3,8 @@ package com.AuthService.services;
 import com.AuthService.dto.SignInRequestDto;
 import com.AuthService.dto.SignUpRequestDto;
 import com.AuthService.dto.TokenDto;
+import com.BookmarkService.domain.EROLE;
+import com.BookmarkService.web.httpStatusesExceptions.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +21,9 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public TokenDto signUp(SignUpRequestDto request) {
+        if (request.getRole() != EROLE.ROLE_TEACHER && request.getRole() != EROLE.ROLE_STUDENT) {
+            throw new BadRequestException(String.format("Bad role name %s in request", request.getRole()));
+        }
         AuthUser user = new AuthUser();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -32,9 +37,8 @@ public class AuthenticationService {
     }
 
     public TokenDto singIn(SignInRequestDto request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-        );
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
+        authenticationManager.authenticate(token);
 
         var user = userService.userDetailsService().loadUserByUsername(request.getUsername());
         jwtService.generateToken(user);
