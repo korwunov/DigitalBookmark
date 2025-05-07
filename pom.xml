@@ -17,6 +17,7 @@
         <module>AuthService</module>
 		<module>BookmarkService</module>
 		<module>FileService</module>
+        <module>Client</module>
 	</modules>
 	<dependencies>
 		<dependency>

@@ -29,7 +29,7 @@ public class UserAuthService {
                 studentRepository.findByUsername(user.getUsername()).isPresent() ||
                 teacherRepository.findByUsername(user.getUsername()).isPresent()
         ) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Пользователь с таким именем уже существует");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Пользователь с таким логином уже существует");
         }
         if (user.getRole() == EROLE.ROLE_STUDENT) {
             Student s = new Student();
