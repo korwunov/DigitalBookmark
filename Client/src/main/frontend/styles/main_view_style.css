@@ -1,0 +1,55 @@
+.main-view {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #f0f2f5; /* Фоновый цвет страницы */
+}
+
+.header {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.header a {
+    color: white;
+    margin-right: 20px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.header a:hover {
+    text-decoration: underline;
+}
+
+.logo-container {
+    margin-bottom: 20px;
+}
+
+.title-container {
+    margin-bottom: 40px;
+}
+
+.buttons-layout {
+    flex-direction: column;
+    align-items: center;
+}
+
+.buttons-layout button {
+    width: 200px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 0;
+    margin-bottom: 10px;
+}
+
+.buttons-layout button:hover {
+    background-color: #0056b3;
+}

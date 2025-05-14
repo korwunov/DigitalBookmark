@@ -15,7 +15,7 @@ import java.util.List;
 
 @Controller
 @Slf4j
-@RequestMapping("/api/groups")
+@RequestMapping("/api/bookmark/groups")
 @ResponseBody
 public class GroupController {
     public GroupService groupService;

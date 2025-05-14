@@ -1,5 +1,7 @@
 package com.FileService.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.Getter;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -71,7 +73,8 @@ public class RabbitMQConfig {
 
     @Bean
     public MessageConverter converter() {
-        return new Jackson2JsonMessageConverter();
+        ObjectMapper mapper = JsonMapper.builder().findAndAddModules().build();
+        return new Jackson2JsonMessageConverter(mapper);
     }
 
     @Bean

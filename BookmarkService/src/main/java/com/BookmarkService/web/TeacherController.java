@@ -7,6 +7,7 @@ import com.BookmarkService.middleware.Authentication;
 import com.BookmarkService.web.dto.MarkDTO;
 import com.BookmarkService.services.MarkService;
 import com.BookmarkService.services.TeacherService;
+import com.BookmarkService.web.dto.response.MarkResponseDTO;
 import com.BookmarkService.web.httpStatusesExceptions.BadRequestException;
 import com.BookmarkService.web.httpStatusesExceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ import java.util.List;
 
 @Controller
 @Slf4j
-@RequestMapping("/api/teachers")
+@RequestMapping("/api/bookmark/teachers")
 @ResponseBody
 public class TeacherController {
     public TeacherService teacherService;
@@ -42,6 +43,17 @@ public class TeacherController {
     @GetMapping("/{id}")
     public Teacher getTeacherById(@RequestHeader("Authorization") String token, Object user, @PathVariable Long id) {
         return this.teacherService.getTeacherById(id);
+    }
+
+    @Authentication(roles = {EROLE.ROLE_TEACHER})
+    @GetMapping("/marks")
+    public List<MarkResponseDTO> getMarksGivenByTeacher(@RequestHeader("Authorization") String token, Object user) {
+        try {
+            Teacher t = (Teacher) user;
+            return markService.getMarksGivenByTeacher(t);
+        } catch (ClassCastException e) {
+            throw new BadRequestException(e.getMessage());
+        }
     }
 
 //    @PostMapping

@@ -3,7 +3,11 @@ package com.BookmarkService.web;
 import com.BookmarkService.domain.EROLE;
 import com.BookmarkService.domain.Student;
 import com.BookmarkService.middleware.Authentication;
+import com.BookmarkService.services.MarkService;
 import com.BookmarkService.services.StudentService;
+import com.BookmarkService.web.dto.request.StudentBySubjectAndGroup;
+import com.BookmarkService.web.dto.response.MarkResponseDTO;
+import com.BookmarkService.web.dto.response.StudentResponseDTO;
 import com.BookmarkService.web.httpStatusesExceptions.BadRequestException;
 import com.BookmarkService.web.httpStatusesExceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -11,20 +15,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.yaml.snakeyaml.error.Mark;
 
 import java.util.List;
 import java.util.Optional;
 
 @Controller   //Обозначение класса контроллера для Spring
 @Slf4j        //Подключение логирования
-@RequestMapping("/api/students")    //Роутинг для запросов данного класса
+@RequestMapping("/api/bookmark/students")    //Роутинг для запросов данного класса
 @ResponseBody //Обозначает, что HTTP обработчики данного класса должны возращать тело ответа
 public class StudentController {
     public StudentService studentService;
+    public MarkService markService;
 
     @Autowired
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService, MarkService markService) {
         this.studentService = studentService;
+        this.markService = markService;
     }
 
     @Authentication(roles = {EROLE.ROLE_TEACHER, EROLE.ROLE_STUDENT})
@@ -49,6 +56,25 @@ public class StudentController {
             throw new NotFoundException(e.getMessage());
         }
     }
+
+    @Authentication(roles = {EROLE.ROLE_STUDENT})
+    @GetMapping("/marks")
+    public List<MarkResponseDTO> getStudentMarks(@RequestHeader("Authorization") String token, Object user) {
+        try {
+            Student s = (Student) user;
+            return markService.getStudentMarks(s);
+        } catch (ClassCastException ex) {
+            throw new BadRequestException("Unable to cast user to Student");
+        }
+    }
+
+    @Authentication(roles = {EROLE.ROLE_TEACHER})
+    @GetMapping("/getStudentsBySubjectAndGroup")
+    public List<StudentResponseDTO> getStudentsBySubjectAndGroup(@RequestHeader("Authorization") String token, Object user,
+                                                                 @RequestParam Long groupId, @RequestParam Long subjectId) {
+        return this.studentService.getStudentsBySubjectAndGroupIds(groupId, subjectId);
+    }
+
 
 //    @PostMapping
 //    public HttpStatus addStudent(@RequestBody Student u) {

@@ -1,12 +1,13 @@
 package com.Client.views;
 
-import com.Client.service.AuthService;
+import com.Client.model.UserSession;
+import com.Client.services.AuthService;
+import com.Client.views.components.Header;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.page.WebStorage;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -17,6 +18,7 @@ import org.springframework.web.client.RestClientException;
 
 @Route("/login")
 @PageTitle("Авторизация")
+@CssImport("./styles/login_view_style.css")
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
     private TextField usernameField = new TextField("Логин");
@@ -37,12 +39,11 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         formLayout.setColspan(usernameField, 3);
         formLayout.setColspan(passwordField, 3);
         formLayout.setColspan(loginButton, 3);
-//        formLayout.setClassName("login-view");
+        formLayout.setClassName("login-view");
         add(formLayout);
         loginButton.addClickListener(e -> login());
-        setAlignItems(Alignment.CENTER);//puts button in horizontal  center
-        setJustifyContentMode(JustifyContentMode.BETWEEN);//puts button in vertical center
-//        setSizeFull();
+//        setAlignItems(Alignment.CENTER);//puts button in horizontal  center
+//        setJustifyContentMode(JustifyContentMode.BETWEEN);//puts button in vertical center
     }
 
     private void login() {
@@ -51,6 +52,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
         try {
             authService.login(username, password);
+            getUI().ifPresent(ui -> ui.navigate("/profile"));
         } catch (RestClientException e) {
             Notification.show(e.getMessage(), 3000, Notification.Position.TOP_CENTER);
         }
@@ -58,9 +60,8 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        // Redirect to main view if already logged in
-//        if (SecurityUtils.isUserLoggedIn()) {
-//            event.rerouteTo("");
-//        }
+        if (UserSession.getUserData() != null) {
+            event.rerouteTo("/profile");
+        }
     }
 }

@@ -1,8 +1,6 @@
 package com.BookmarkService.services;
 
-import com.BookmarkService.domain.Student;
-import com.BookmarkService.domain.Subject;
-import com.BookmarkService.domain.Teacher;
+import com.BookmarkService.domain.*;
 import com.BookmarkService.repositories.StudentRepository;
 import com.BookmarkService.web.dto.SubjectDTO;
 import com.BookmarkService.repositories.SubjectRepository;
@@ -43,8 +41,21 @@ public class SubjectService {
         return sub;
     }
 
-    public List<Subject> getAllSubjects() {
-        return this.subjectRepository.findAll();
+    public List<Subject> getAllSubjects(User user) {
+        Optional<List<Subject>> subjectRecords;
+        if (user.getRole() == EROLE.ROLE_STUDENT) {
+            Student student = (Student) user;
+            subjectRecords = this.subjectRepository.findBySubjectStudents(student);
+            if (subjectRecords.isEmpty()) throw new NotFoundException("Предметы для пользователя не найдены");
+            return subjectRecords.get();
+        }
+        else if (List.of(EROLE.ROLE_TEACHER, EROLE.ROLE_ADMIN).contains(user.getRole())) {
+            Teacher teacher = (Teacher) user;
+            subjectRecords = this.subjectRepository.findBySubjectTeachers(teacher);
+            if (subjectRecords.isEmpty()) throw new NotFoundException("Предметы для пользователя не найдены");
+            return subjectRecords.get();
+        }
+        throw new BadRequestException("Невалдиный запрос");
     }
 
     public Subject getSubjectById(Long id) throws Exception {

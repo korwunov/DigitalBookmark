@@ -1,0 +1,48 @@
+.profile-view {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #f0f2f5; /* Фоновый цвет страницы */
+    justify-content: center;
+    align-items: center;
+}
+
+.user-info-container {
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.user-info-container h2 {
+    margin-bottom: 10px;
+}
+
+.user-info-container p {
+    margin: 5px 0;
+}
+
+.message-paragraph {
+    margin-top: 20px;
+    font-size: 16px;
+    color: red;
+}
+
+.logout-button {
+    width: 200px;
+    background-color: white;
+    color: red;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 0;
+    margin-bottom: 10px;
+}
+
+.logout-button:hover {
+    background-color: red;
+    color: white;
+}

@@ -1,14 +1,12 @@
 package com.BookmarkService.services;
 
-import com.BookmarkService.domain.Student;
-import com.BookmarkService.domain.Subject;
-import com.BookmarkService.domain.SubjectMarkRecord;
-import com.BookmarkService.domain.Teacher;
+import com.BookmarkService.domain.*;
 import com.BookmarkService.web.dto.MarkDTO;
 import com.BookmarkService.repositories.StudentRepository;
 import com.BookmarkService.repositories.SubjectMarkRepository;
 import com.BookmarkService.repositories.SubjectRepository;
 import com.BookmarkService.repositories.TeacherRepository;
+import com.BookmarkService.web.dto.response.MarkResponseDTO;
 import com.BookmarkService.web.httpStatusesExceptions.BadRequestException;
 import com.BookmarkService.web.httpStatusesExceptions.ForbiddenException;
 import com.BookmarkService.web.httpStatusesExceptions.NotFoundException;
@@ -92,6 +90,42 @@ public class MarkService {
         this.studentRepository.save(student);
         this.markRepository.save(mark);
         return mark;
+    }
+
+    public List<MarkResponseDTO> getStudentMarks(Student student) {
+        Optional<List<SubjectMarkRecord>> marksRecords = markRepository.findByMarkOwner(student);
+        if (marksRecords.isEmpty()) {
+            throw new NotFoundException("Оценки не найдены");
+        }
+        List<SubjectMarkRecord> marks = marksRecords.get();
+        List<MarkResponseDTO> marksResponse = new ArrayList<>();
+        for (SubjectMarkRecord mark : marks) {
+            marksResponse.add(new MarkResponseDTO(mark.getId(), mark.getMarkSubject().getName(),
+                    mark.getMarkGiver().getName(), mark.getMarkOwner().getName(), mark.getMarkOwner().getGroup().getName(),
+                    mark.getMarkSetDate(), mark.getMarkValue()));
+        }
+        return marksResponse;
+    }
+
+    public List<MarkResponseDTO> getMarksGivenByTeacher(Teacher teacher) {
+        Optional<List<SubjectMarkRecord>> marksRecords;
+        if (teacher.getRole() == EROLE.ROLE_ADMIN) {
+            marksRecords = Optional.of(markRepository.findAll());
+        }
+        else {
+            marksRecords = markRepository.findByMarkGiver(teacher);
+        }
+        if (marksRecords.isEmpty()) {
+            throw new NotFoundException("Оценки не найдены");
+        }
+        List<SubjectMarkRecord> marks = marksRecords.get();
+        List<MarkResponseDTO> marksResponse = new ArrayList<>();
+        for (SubjectMarkRecord mark : marks) {
+            marksResponse.add(new MarkResponseDTO(mark.getId(), mark.getMarkSubject().getName(),
+                    mark.getMarkGiver().getName(), mark.getMarkOwner().getName(), mark.getMarkOwner().getGroup().getName(),
+                    mark.getMarkSetDate(), mark.getMarkValue()));
+        }
+        return marksResponse;
     }
 
     public List<SubjectMarkRecord> getMarksBySubjectAndDates(Long subjectId, String dateFrom, String dateTo) {

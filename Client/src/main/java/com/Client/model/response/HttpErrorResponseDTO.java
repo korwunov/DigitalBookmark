@@ -1,4 +1,4 @@
-package com.Client.model;
+package com.Client.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

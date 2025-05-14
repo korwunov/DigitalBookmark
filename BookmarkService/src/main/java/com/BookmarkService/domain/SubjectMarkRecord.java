@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity     //Обозначение сущности для Spring
 @Data       //Автоинициализация гетеров и сетеров для полей класса

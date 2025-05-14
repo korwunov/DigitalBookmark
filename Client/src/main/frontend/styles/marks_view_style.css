@@ -1,0 +1,84 @@
+.grades-view {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #f0f2f5; /* Фоновый цвет страницы */
+    justify-content: center;
+    align-items: center;
+}
+
+.grid-container {
+    width: 80%;
+    max-width: 800px;
+}
+
+.add-grade-dialog {
+    width: 60%;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.add-grade-dialog .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.add-grade-dialog .dialog-header h2 {
+    margin: 0;
+}
+
+.add-grade-dialog .dialog-header i {
+    cursor: pointer;
+}
+
+.add-grade-dialog .form-field {
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.add-grade-dialog button {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 0;
+}
+
+.add-grade-dialog button:hover {
+    background-color: #0056b3;
+}
+
+.add-grade-button {
+    margin-top: 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 0;
+}
+
+.add-grade-button:hover {
+    background-color: #0056b3;
+}
+
+.user-info-container {
+    margin-bottom: 20px;
+}
+
+.user-info-container h2 {
+    margin-bottom: 10px;
+}
+
+.user-info-container p {
+    margin: 5px 0;
+}

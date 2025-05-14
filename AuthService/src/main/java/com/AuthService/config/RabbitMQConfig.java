@@ -1,5 +1,7 @@
 package com.AuthService.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -53,7 +55,8 @@ public class RabbitMQConfig {
 
     @Bean
     public MessageConverter converter() {
-        return new Jackson2JsonMessageConverter();
+        ObjectMapper mapper = JsonMapper.builder().findAndAddModules().build();
+        return new Jackson2JsonMessageConverter(mapper);
     }
 
     @Bean

@@ -1,9 +1,6 @@
 package com.BookmarkService.web;
 
-import com.BookmarkService.domain.EROLE;
-import com.BookmarkService.domain.Student;
-import com.BookmarkService.domain.Subject;
-import com.BookmarkService.domain.Teacher;
+import com.BookmarkService.domain.*;
 import com.BookmarkService.middleware.Authentication;
 import com.BookmarkService.services.StudentService;
 import com.BookmarkService.services.TeacherService;
@@ -20,7 +17,7 @@ import java.util.List;
 
 @Controller
 @Slf4j
-@RequestMapping("/api/subjects")
+@RequestMapping("/api/bookmark/subjects")
 @ResponseBody
 public class SubjectController {
     @Autowired
@@ -44,7 +41,7 @@ public class SubjectController {
     @Authentication(roles = {EROLE.ROLE_TEACHER, EROLE.ROLE_STUDENT})
     @GetMapping
     public List<Subject> getAllSubjects(@RequestHeader("Authorization") String token, Object user) {
-        return this.subjectService.getAllSubjects();
+         return this.subjectService.getAllSubjects((User) user);
     }
 
     @Authentication(roles = {EROLE.ROLE_TEACHER, EROLE.ROLE_STUDENT})

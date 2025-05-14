@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "files")
 public class FileEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "file_generator")
+    @SequenceGenerator(name = "file_generator", sequenceName = "files_seq", allocationSize = 1)
     private Long id;
 
     private String fileName;

@@ -7,6 +7,8 @@ import com.BookmarkService.domain.Teacher;
 import com.BookmarkService.domain.User;
 import com.AuthService.repositories.StudentRepository;
 import com.AuthService.repositories.TeacherRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;

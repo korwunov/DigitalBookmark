@@ -1,7 +1,6 @@
 package com.Client.views;
 
-import com.Client.model.UserRegistrationRequestDTO;
-import com.Client.service.AuthService;
+import com.Client.services.AuthService;
 import com.vaadin.componentfactory.ToggleButton;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
@@ -42,7 +41,6 @@ public class RegistrationView extends VerticalLayout implements BeforeEnterObser
 
 
         FormLayout formLayout = new FormLayout();
-        // TODO найти новый тогглер
         formLayout.add(usernameField, rolesToggler, fioField, passwordField, confirmPasswordField, registerButton);
 
         formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1), new FormLayout.ResponsiveStep("500px", 2));
@@ -80,6 +78,7 @@ public class RegistrationView extends VerticalLayout implements BeforeEnterObser
         else {
             try {
                 authService.register(username, password, name, role);
+                getUI().ifPresent(ui -> ui.navigate("/profile"));
             } catch (RestClientException e) {
                 Notification.show(e.getMessage(), 3000, Notification.Position.TOP_CENTER);
             }
