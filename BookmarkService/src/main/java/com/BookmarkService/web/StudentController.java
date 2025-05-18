@@ -5,7 +5,6 @@ import com.BookmarkService.domain.Student;
 import com.BookmarkService.middleware.Authentication;
 import com.BookmarkService.services.MarkService;
 import com.BookmarkService.services.StudentService;
-import com.BookmarkService.web.dto.request.StudentBySubjectAndGroup;
 import com.BookmarkService.web.dto.response.MarkResponseDTO;
 import com.BookmarkService.web.dto.response.StudentResponseDTO;
 import com.BookmarkService.web.httpStatusesExceptions.BadRequestException;

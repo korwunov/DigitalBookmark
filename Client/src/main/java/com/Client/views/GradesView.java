@@ -25,8 +25,6 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.NumberField;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -175,14 +173,14 @@ public class GradesView extends VerticalLayout implements BeforeEnterObserver {
                 add(addGradeButton, addGradeDialog);
                 addGradeButton.addClickListener(e -> addGradeDialog.open());
                 groupComboBox.setItems(groupsService.getAllGroups());
-                subjectComboBox.setItems(subjectsService.getTeachersAvailableSubjects());
+                subjectComboBox.setItems(subjectsService.getAllUserSubjects());
             } else if (Objects.equals(role, "ROLE_ADMIN")) {
                 List<MarksDataDTO> grades = marksService.getMarks("teachers");
                 gradesGrid.setDataProvider(new ListDataProvider<>(grades));
                 add(addGradeButton, addGradeDialog);
                 addGradeButton.addClickListener(e -> addGradeDialog.open());
                 groupComboBox.setItems(groupsService.getAllGroups());
-                subjectComboBox.setItems(subjectsService.getTeachersAvailableSubjects());
+                subjectComboBox.setItems(subjectsService.getAllUserSubjects());
             }
 
         } catch (RestClientException ex) {

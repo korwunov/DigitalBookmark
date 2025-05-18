@@ -3,7 +3,7 @@ package com.BookmarkService.services;
 import com.BookmarkService.domain.EROLE;
 import com.BookmarkService.domain.User;
 import com.BookmarkService.repositories.UserRepository;
-import com.BookmarkService.web.dto.RoleDTO;
+import com.BookmarkService.web.dto.request.RoleDTO;
 import com.BookmarkService.web.httpStatusesExceptions.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

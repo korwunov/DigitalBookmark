@@ -1,7 +1,7 @@
 package com.BookmarkService.services;
 
 import com.BookmarkService.domain.*;
-import com.BookmarkService.web.dto.MarkDTO;
+import com.BookmarkService.web.dto.request.MarkDTO;
 import com.BookmarkService.repositories.StudentRepository;
 import com.BookmarkService.repositories.SubjectMarkRepository;
 import com.BookmarkService.repositories.SubjectRepository;

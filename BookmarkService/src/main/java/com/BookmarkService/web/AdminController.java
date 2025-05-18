@@ -2,14 +2,9 @@ package com.BookmarkService.web;
 
 import com.BookmarkService.domain.*;
 import com.BookmarkService.middleware.Authentication;
-import com.BookmarkService.services.StudentService;
 import com.BookmarkService.services.UserService;
-import com.BookmarkService.web.dto.RoleDTO;
-import com.BookmarkService.web.dto.SubjectsToAddDTO;
-import com.BookmarkService.services.TeacherService;
+import com.BookmarkService.web.dto.request.RoleDTO;
 import com.BookmarkService.services.MarkService;
-import com.BookmarkService.web.httpStatusesExceptions.ForbiddenException;
-import com.BookmarkService.web.httpStatusesExceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

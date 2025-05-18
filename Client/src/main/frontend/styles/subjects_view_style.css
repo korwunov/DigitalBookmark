@@ -1,0 +1,95 @@
+.subjects-view {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+    background-color: #f0f2f5; /* Фоновый цвет страницы */
+    justify-content: center;
+    align-items: center;
+}
+
+.grid-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    width: 95%;
+}
+
+.grid-container {
+    width: 80%;
+    max-width: 800px;
+}
+
+.add-subject-dialog {
+    width: 400px;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.add-subject-dialog .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.add-subject-dialog .dialog-header h2 {
+    margin: 0;
+}
+
+.add-subject-dialog .dialog-header i {
+    cursor: pointer;
+}
+
+.add-subject-dialog .form-field {
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.add-subject-dialog button {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 0;
+}
+
+.add-subject-dialog button:hover {
+    background-color: #0056b3;
+}
+
+.add-subject-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.add-subject-button:hover {
+    background-color: #0056b3;
+}
+
+.delete-button {
+    color: red;
+    cursor: pointer;
+}
+
+.user-info-container {
+    margin-bottom: 20px;
+}
+
+.user-info-container h2 {
+    margin-bottom: 10px;
+}
+
+.user-info-container p {
+    margin: 5px 0;
+}

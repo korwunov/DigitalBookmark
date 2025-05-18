@@ -7,8 +7,6 @@ import com.BookmarkService.domain.Subject;
 import com.BookmarkService.repositories.GroupRepository;
 import com.BookmarkService.repositories.StudentRepository;
 import com.BookmarkService.repositories.SubjectRepository;
-import com.BookmarkService.web.dto.SubjectsToAddDTO;
-import com.BookmarkService.web.dto.request.StudentBySubjectAndGroup;
 import com.BookmarkService.web.dto.response.StudentResponseDTO;
 import com.BookmarkService.web.httpStatusesExceptions.NotFoundException;
 import jakarta.transaction.Transactional;

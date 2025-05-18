@@ -1,4 +1,4 @@
-package com.BookmarkService.web.dto;
+package com.BookmarkService.web.dto.request;
 
 import lombok.Data;
 

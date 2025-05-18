@@ -32,6 +32,10 @@ public abstract class User implements UserDetails {
     private String username;
 
     @JsonIgnore
+    @Column(name = "is_enabled", nullable = false)
+    protected boolean enabled;
+
+    @JsonIgnore
     @Column(name = "password", nullable = false)
     private String password;
 

@@ -4,7 +4,7 @@ import com.BookmarkService.domain.EROLE;
 import com.BookmarkService.domain.Group;
 import com.BookmarkService.middleware.Authentication;
 import com.BookmarkService.services.GroupService;
-import com.BookmarkService.web.dto.GroupAssignmentDto;
+import com.BookmarkService.web.dto.request.GroupAssignmentDto;
 import com.BookmarkService.web.dto.GroupDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

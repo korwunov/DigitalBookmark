@@ -1,13 +1,11 @@
 package com.BookmarkService.services;
 
 import com.BookmarkService.domain.EROLE;
-import com.BookmarkService.domain.Subject;
 import com.BookmarkService.domain.Teacher;
 import com.BookmarkService.repositories.SubjectRepository;
 import com.BookmarkService.repositories.TeacherRepository;
-import com.BookmarkService.web.dto.SubjectsToAddDTO;
+import com.BookmarkService.web.dto.response.TeacherResponseDTO;
 import com.BookmarkService.web.httpStatusesExceptions.BadRequestException;
-import com.BookmarkService.web.httpStatusesExceptions.NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +34,8 @@ public class TeacherService {
     }
 
     //Получение всех учителей
-    public List<Teacher> getAllTeachers() {
-        return this.teacherRepository.findAll();
+    public List<TeacherResponseDTO> getAllTeachers() {
+        return this.teacherRepository.findAll().stream().map(t -> new TeacherResponseDTO(t.getId(), t.getName())).toList();
     }
 
     //Получение учителя по ID

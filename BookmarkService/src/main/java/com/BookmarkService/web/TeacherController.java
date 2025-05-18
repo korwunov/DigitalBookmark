@@ -4,15 +4,14 @@ import com.BookmarkService.domain.EROLE;
 import com.BookmarkService.domain.SubjectMarkRecord;
 import com.BookmarkService.domain.Teacher;
 import com.BookmarkService.middleware.Authentication;
-import com.BookmarkService.web.dto.MarkDTO;
+import com.BookmarkService.web.dto.request.MarkDTO;
 import com.BookmarkService.services.MarkService;
 import com.BookmarkService.services.TeacherService;
 import com.BookmarkService.web.dto.response.MarkResponseDTO;
+import com.BookmarkService.web.dto.response.TeacherResponseDTO;
 import com.BookmarkService.web.httpStatusesExceptions.BadRequestException;
-import com.BookmarkService.web.httpStatusesExceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +34,7 @@ public class TeacherController {
 
     @Authentication(roles = {EROLE.ROLE_STUDENT, EROLE.ROLE_TEACHER})
     @GetMapping
-    public List<Teacher> getAllTeachers(@RequestHeader("Authorization") String token, Object user) {
+    public List<TeacherResponseDTO> getAllTeachers(@RequestHeader("Authorization") String token, Object user) {
         return this.teacherService.getAllTeachers();
     }
 

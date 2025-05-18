@@ -2,10 +2,13 @@ package com.BookmarkService.services;
 
 import com.BookmarkService.domain.*;
 import com.BookmarkService.repositories.StudentRepository;
-import com.BookmarkService.web.dto.SubjectDTO;
+import com.BookmarkService.web.dto.request.SubjectDTO;
 import com.BookmarkService.repositories.SubjectRepository;
 import com.BookmarkService.repositories.TeacherRepository;
-import com.BookmarkService.web.dto.SubjectsToAddDTO;
+import com.BookmarkService.web.dto.request.SubjectsToAddDTO;
+import com.BookmarkService.web.dto.response.StudentResponseDTO;
+import com.BookmarkService.web.dto.response.SubjectResponseDTO;
+import com.BookmarkService.web.dto.response.TeacherResponseDTO;
 import com.BookmarkService.web.httpStatusesExceptions.BadRequestException;
 import com.BookmarkService.web.httpStatusesExceptions.NotFoundException;
 import jakarta.transaction.Transactional;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,19 +45,37 @@ public class SubjectService {
         return sub;
     }
 
-    public List<Subject> getAllSubjects(User user) {
+    public List<SubjectResponseDTO> getAllSubjects(User user) {
         Optional<List<Subject>> subjectRecords;
         if (user.getRole() == EROLE.ROLE_STUDENT) {
             Student student = (Student) user;
             subjectRecords = this.subjectRepository.findBySubjectStudents(student);
             if (subjectRecords.isEmpty()) throw new NotFoundException("Предметы для пользователя не найдены");
-            return subjectRecords.get();
+            List<SubjectResponseDTO> response = new ArrayList<>();
+            for (Subject subject : subjectRecords.get()) {
+                response.add(new SubjectResponseDTO(
+                        subject.getId(), subject.getName(),
+                        Objects.nonNull(subject.getSubjectTeachers()) ? subject.getSubjectTeachers().stream().map(t -> new TeacherResponseDTO(t.getId(), t.getName())).toList() : null,
+                        null
+                        )
+                );
+            }
+            return response;
         }
         else if (List.of(EROLE.ROLE_TEACHER, EROLE.ROLE_ADMIN).contains(user.getRole())) {
             Teacher teacher = (Teacher) user;
-            subjectRecords = this.subjectRepository.findBySubjectTeachers(teacher);
+            subjectRecords = teacher.getRole() == EROLE.ROLE_ADMIN ? Optional.of(this.subjectRepository.findAll()) : this.subjectRepository.findBySubjectTeachers(teacher);
             if (subjectRecords.isEmpty()) throw new NotFoundException("Предметы для пользователя не найдены");
-            return subjectRecords.get();
+            List<SubjectResponseDTO> response = new ArrayList<>();
+            for (Subject subject : subjectRecords.get()) {
+                response.add(new SubjectResponseDTO(
+                                subject.getId(), subject.getName(),
+                                Objects.nonNull(subject.getSubjectTeachers()) ? subject.getSubjectTeachers().stream().map(t -> new TeacherResponseDTO(t.getId(), t.getName())).toList() : null,
+                                Objects.nonNull(subject.getSubjectStudents()) ? subject.getSubjectStudents().stream().map(s -> new StudentResponseDTO(s.getId(), s.getName(), s.getGroup())).toList() : null
+                        )
+                );
+            }
+            return response;
         }
         throw new BadRequestException("Невалдиный запрос");
     }
@@ -142,7 +164,7 @@ public class SubjectService {
 
     public Teacher unassignSubjectToTeacher(SubjectsToAddDTO subjects) {
         Optional<Teacher> teacherRecord = this.teacherRepository.findById(subjects.getUserId());
-        if (teacherRecord.isEmpty()) throw new NotFoundException("teacher not found");
+        if (teacherRecord.isEmpty()) throw new NotFoundException("Teacher not found");
         Teacher teacher = teacherRecord.get();
         List<Subject> teacherSubjects = teacher.getTeacherSubjects();
         if (teacherSubjects == null) throw new BadRequestException("There are no subjects assigned to teacher");
@@ -151,10 +173,16 @@ public class SubjectService {
             Optional<Subject> subjectRecord = this.subjectRepository.findById(subjectToDeleteId);
             if (subjectRecord.isEmpty()) throw new NotFoundException("subject with id " + subjectToDeleteId + " not found");
             Subject subject = subjectRecord.get();
+            if (subject.getSubjectTeachers() != null) {
+                subject.getSubjectTeachers().remove(teacher);
+                this.subjectRepository.save(subject);
+            }
             teacherSubjects.remove(subject);
-            subject.getSubjectTeachers().remove(teacher);
         }
-
+        if (!(Objects.equals(teacher.getTeacherSubjects(), teacherSubjects))) {
+            teacher.setTeacherSubjects(teacherSubjects);
+            this.teacherRepository.save(teacher);
+        }
         return teacher;
     }
 
@@ -169,6 +197,11 @@ public class SubjectService {
             Optional<Subject> subjectRecord = this.subjectRepository.findById(subjectToDeleteId);
             if (subjectRecord.isEmpty())
                 throw new NotFoundException("Subject with id " + subjectToDeleteId + " not found");
+            Subject subject = subjectRecord.get();
+            if (subject.getSubjectStudents() != null) {
+                subject.getSubjectStudents().remove(student);
+                this.subjectRepository.save(subject);
+            }
             studentSubjects.remove(subjectRecord.get());
         }
 

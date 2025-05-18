@@ -30,6 +30,6 @@ public class AuthUser extends User {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.enabled;
     }
 }

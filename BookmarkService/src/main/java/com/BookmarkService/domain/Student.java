@@ -63,6 +63,6 @@ public class Student extends User{
     @JsonIgnore
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.enabled;
     }
 }

@@ -30,6 +30,28 @@ public class StudentsService {
         this.restTemplate = restTemplate;
     }
 
+    public List<StudentDTO> getAllStudents() {
+        try {
+            return restTemplate.exchange(
+                    this.bookmarkServiceUrl + BOOKMARK_SERVICE_ROUTE + "/students",
+                    HttpMethod.GET,
+                    HttpRequestEntity.getRequestEntity(),
+                    new ParameterizedTypeReference<List<StudentDTO>>() {}
+            ).getBody();
+        } catch (HttpClientErrorException | HttpServerErrorException httpException) {
+            if (httpException.getClass().getSuperclass() == HttpClientErrorException.class) {
+                throw new RestClientException(
+                        Objects.requireNonNull(
+                                httpException.getResponseBodyAs(HttpErrorResponseDTO.class)
+                        ).message
+                );
+            } else {
+                log.error(String.format("GET /students returned %s, response body %s", httpException.getStatusCode(), httpException.getResponseBodyAs(HttpErrorResponseDTO.class)));
+                throw new RestClientException("Наблюдаются технические проблемы, попробуйте получить список позже");
+            }
+        }
+    }
+
     public List<StudentDTO> getStudentsByGroupAndSubject(Long groupId, Long subjectId) {
         try {
             return restTemplate.exchange(

@@ -4,9 +4,10 @@ import com.BookmarkService.domain.*;
 import com.BookmarkService.middleware.Authentication;
 import com.BookmarkService.services.StudentService;
 import com.BookmarkService.services.TeacherService;
-import com.BookmarkService.web.dto.SubjectDTO;
+import com.BookmarkService.web.dto.request.SubjectDTO;
 import com.BookmarkService.services.SubjectService;
-import com.BookmarkService.web.dto.SubjectsToAddDTO;
+import com.BookmarkService.web.dto.request.SubjectsToAddDTO;
+import com.BookmarkService.web.dto.response.SubjectResponseDTO;
 import com.BookmarkService.web.httpStatusesExceptions.BadRequestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class SubjectController {
 
     @Authentication(roles = {EROLE.ROLE_TEACHER, EROLE.ROLE_STUDENT})
     @GetMapping
-    public List<Subject> getAllSubjects(@RequestHeader("Authorization") String token, Object user) {
+    public List<SubjectResponseDTO> getAllSubjects(@RequestHeader("Authorization") String token, Object user) {
          return this.subjectService.getAllSubjects((User) user);
     }
 
