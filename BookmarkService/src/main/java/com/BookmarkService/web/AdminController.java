@@ -14,7 +14,7 @@ import java.util.List;
 
 @Controller
 @Slf4j
-@RequestMapping("/api/admin")
+@RequestMapping("/api/bookmark/admin")
 @ResponseBody
 public class AdminController {
 
@@ -33,6 +33,12 @@ public class AdminController {
     public User setRole(@RequestHeader("Authorization") String token, Object user, @RequestBody RoleDTO roleInfo) {
         return this.userService.setRole(roleInfo);
 
+    }
+
+    @GetMapping("/users")
+    @Authentication(roles = {EROLE.ROLE_ADMIN})
+    public List<User> getAllUsers(@RequestHeader("Authorization") String token, Object user) {
+        return this.userService.getAllUsers();
     }
 
     @GetMapping("/getMarksStat")

@@ -31,7 +31,7 @@ public abstract class User implements UserDetails {
     @JsonView(Views.UserDataResponse.class)
     private String username;
 
-    @JsonIgnore
+    @JsonView(Views.UserDataResponse.class)
     @Column(name = "is_enabled", nullable = false)
     protected boolean enabled;
 

@@ -21,7 +21,7 @@ import java.util.Set;
 @DiscriminatorValue("ROLE_STUDENT")
 public class Student extends User{
 
-
+    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "markOwner")
     private List<SubjectMarkRecord> marksList;
 

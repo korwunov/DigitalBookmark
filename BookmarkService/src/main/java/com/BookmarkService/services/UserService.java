@@ -8,6 +8,7 @@ import com.BookmarkService.web.httpStatusesExceptions.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,5 +29,9 @@ public class UserService {
         user.setRole(roleInfo.getRole());
         userRepository.save(user);
         return user;
+    }
+
+    public List<User> getAllUsers() {
+        return this.userRepository.findAll();
     }
 }

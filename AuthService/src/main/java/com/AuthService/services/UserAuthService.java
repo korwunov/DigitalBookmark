@@ -39,6 +39,7 @@ public class UserAuthService {
             s.setUsername(user.getUsername());
             s.setPassword(user.getPassword());
             s.setRole(user.getRole());
+            s.setEnabled(true);
             studentRepository.save(s);
         }
         if (user.getRole() == EROLE.ROLE_TEACHER) {
@@ -47,6 +48,7 @@ public class UserAuthService {
             t.setUsername(user.getUsername());
             t.setPassword(user.getPassword());
             t.setRole(user.getRole());
+            t.setEnabled(true);
             teacherRepository.save(t);
         }
 
