@@ -1,21 +1,24 @@
 package com.AuthService.services;
 
-import com.AuthService.dto.UserDataResponse;
-import com.AuthService.dto.SignInRequestDto;
-import com.AuthService.dto.SignUpRequestDto;
-import com.AuthService.dto.TokenDto;
+import com.AuthService.dto.*;
 import com.BookmarkService.domain.*;
 import com.BookmarkService.web.httpStatusesExceptions.BadRequestException;
+import com.BookmarkService.web.httpStatusesExceptions.ForbiddenException;
+import com.BookmarkService.web.httpStatusesExceptions.NotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.AuthService.domain.AuthUser;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -75,6 +78,25 @@ public class AuthenticationService {
         var user = userService.userDetailsService().loadUserByUsername(request.getUsername());
         jwtService.generateToken(user);
         return new TokenDto(jwtService.generateToken(user));
+    }
+
+    public void setEnabled(String token, UserStatusRequest request) {
+        String tokenWithoutType = new StringBuilder(token).substring(token.indexOf(" ") + 1, token.length());
+        String currentUserUsername = jwtService.extractUserName(tokenWithoutType);
+        User currentUser = userService.getByUsername(currentUserUsername);
+        if (Objects.equals(currentUser.getRole() , EROLE.ROLE_ADMIN)) {
+            if (Objects.equals(currentUser.getId(), request.userId)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Нельзя поменять признак активации самому себе");
+            User userToSet = userService.getById(request.userId);
+            if (userToSet == null) throw new NotFoundException("Пользователь с ID " + request.userId + " не найден");
+            try {
+                userService.setEnabled(request.userId, request.isEnabled);
+            } catch (Exception e) {
+                throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, e.getMessage());
+            }
+        }
+        else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Данная операция запрещена");
+        }
     }
 //
 //    private boolean isFieldInClass(Object object, String fieldName) {

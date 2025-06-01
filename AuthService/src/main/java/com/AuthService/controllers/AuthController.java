@@ -1,13 +1,12 @@
 package com.AuthService.controllers;
 
-import com.AuthService.dto.SignInRequestDto;
-import com.AuthService.dto.SignUpRequestDto;
-import com.AuthService.dto.TokenDto;
+import com.AuthService.dto.*;
 import com.AuthService.services.AuthenticationService;
-import com.AuthService.dto.UserDataResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @ResponseBody
@@ -33,4 +32,10 @@ public class AuthController {
 
     @GetMapping("/getUserData")
     public UserDataResponse getUserData(@RequestHeader("Authorization") String token) {return authService.getUserDataByToken(token);}
+
+    @PutMapping("/setEnabled")
+    public void setUserEnabled(@RequestHeader("Authorization") String token, @RequestBody UserStatusRequest request) {
+        if (token.isEmpty()) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token is required");
+        authService.setEnabled(token, request);
+    }
 }

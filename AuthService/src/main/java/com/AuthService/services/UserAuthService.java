@@ -70,6 +70,36 @@ public class UserAuthService {
         //throw new Exception("Multiple users with same usernames " + studentRecord.get() + teacherRecord.get());
     }
 
+    public <T extends User> User getById(Long id) {
+        Optional<Student> studentRecord = studentRepository.findById(id);
+        Optional<Teacher> teacherRecord = teacherRepository.findById(id);
+        if (studentRecord.isEmpty() && teacherRecord.isEmpty()) {
+            return null;
+        }
+        if (studentRecord.isPresent() && teacherRecord.isEmpty()) {
+            return studentRecord.get();
+        }
+        if (studentRecord.isEmpty() && teacherRecord.isPresent()) {
+            return teacherRecord.get();
+        }
+        return null;
+    }
+
+    public void setEnabled(Long id, boolean isEnabled) {
+        Optional<Student> studentRecord = studentRepository.findById(id);
+        Optional<Teacher> teacherRecord = teacherRepository.findById(id);
+        if (studentRecord.isPresent() && teacherRecord.isEmpty()) {
+            Student stud = studentRecord.get();
+            stud.setEnabled(isEnabled);
+            studentRepository.save(stud);
+        }
+        if (studentRecord.isEmpty() && teacherRecord.isPresent()) {
+            Teacher teac = teacherRecord.get();
+            teac.setEnabled(isEnabled);
+            teacherRepository.save(teac);
+        }
+    }
+
 //    @SneakyThrows
     public UserDetailsService userDetailsService() {
         return this::getByUsername;

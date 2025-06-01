@@ -2,6 +2,7 @@ package com.Client.services;
 
 
 import com.Client.model.UserSession;
+import com.Client.model.request.UserEnabledRequest;
 import com.Client.model.response.HttpErrorResponseDTO;
 import com.Client.model.response.TokenDTO;
 import com.Client.model.request.UserLoginRequestDTO;
@@ -12,7 +13,9 @@ import com.vaadin.flow.component.UI;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -93,6 +96,32 @@ public class AuthService {
             }
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void setUserEnabled(Long userId, boolean targetEnabledValue) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", UserSession.getUserToken());
+        HttpEntity<UserEnabledRequest> requestEntity = new HttpEntity<>(new UserEnabledRequest(userId, targetEnabledValue), headers);
+        try {
+            restTemplate.exchange(
+                    this.authServiceUrl + AUTH_SERVICE_ROUTE + "/setEnabled",
+                    HttpMethod.PUT,
+                    requestEntity,
+                    new ParameterizedTypeReference<>() {}
+            );
+        } catch (HttpClientErrorException | HttpServerErrorException httpException) {
+            if (httpException.getClass().getSuperclass() == HttpClientErrorException.class) {
+                throw new RestClientException(
+                        Objects.requireNonNull(
+                                httpException.getResponseBodyAs(HttpErrorResponseDTO.class)
+                        ).message
+                );
+            }
+            else {
+                log.error(String.format("POST /setEnabled returned %s, response body %s", httpException.getStatusCode(), httpException.getResponseBodyAs(HttpErrorResponseDTO.class)));
+                throw new RestClientException("Наблюдаются технические проблемы, попробуйте сменить признак активации позже");
+            }
         }
     }
 

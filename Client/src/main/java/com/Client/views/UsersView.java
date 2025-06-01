@@ -3,15 +3,19 @@ package com.Client.views;
 import com.Client.model.UserSession;
 import com.Client.model.response.GroupDTO;
 import com.Client.model.response.UserDataDTO;
+import com.Client.services.AuthService;
 import com.Client.services.GroupsService;
 import com.Client.services.UsersService;
+import com.Client.views.components.Header;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Main;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -26,6 +30,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import java.util.List;
+import java.util.Objects;
 
 @Route("users")
 @PageTitle("Пользователи")
@@ -34,8 +39,9 @@ public class UsersView extends VerticalLayout implements BeforeEnterObserver {
 
     private UsersService usersService;
     private GroupsService groupsService;
+    private AuthService authService;
 
-
+    private Main usersMainContainer = new Main();
     private Grid<UserDataDTO> usersGrid = new Grid<>(UserDataDTO.class);
     private Dialog assignGroupDialog = new Dialog();
     private ComboBox<GroupDTO> groupComboBox = new ComboBox<>("Выберите группу");
@@ -50,9 +56,10 @@ public class UsersView extends VerticalLayout implements BeforeEnterObserver {
     private Button confirmPromoteButton = new Button("Подтвердить");
     private Button confirmDemoteButton = new Button("Отмена");
 
-    public UsersView(UsersService usersService, GroupsService groupsService) {
+    public UsersView(UsersService usersService, GroupsService groupsService, AuthService authService) {
         this.usersService = usersService;
         this.groupsService = groupsService;
+        this.authService = authService;
 
         // Настройка грида
         usersGrid.removeAllColumns();
@@ -140,7 +147,7 @@ public class UsersView extends VerticalLayout implements BeforeEnterObserver {
 
         groupComboBox.setItemLabelGenerator(GroupDTO::getName);
 
-        assignGroupButton.addClickListener(e -> assignGroup());
+
 
         assignGroupDialog.addClassName("assign-group-dialog");
         groupComboBox.addClassName("form-field");
@@ -169,13 +176,11 @@ public class UsersView extends VerticalLayout implements BeforeEnterObserver {
 
         confirmDialog.addCancelListener(e -> confirmDialog.close());
 
-        // Настройка основного содержимого
-        setJustifyContentMode(JustifyContentMode.CENTER);
-        setAlignItems(Alignment.CENTER);
-        setSizeFull();
-        setClassName("users-view");
 
-        add(new H2("Пользователи"), usersGrid);
+        // Настройка основного содержимого
+        usersMainContainer.setSizeFull();
+        usersMainContainer.setClassName("users-view");
+        usersMainContainer.add(new H2("Пользователи"), usersGrid);
     }
 
     private Long currentUserId;
@@ -189,6 +194,8 @@ public class UsersView extends VerticalLayout implements BeforeEnterObserver {
             event.rerouteTo("/profile");
         }
         else {
+            Header header = new Header(UsersView.class, UserSession.getUserRole());
+            add(header, usersMainContainer);
             refreshGrid();
         }
     }
@@ -208,36 +215,36 @@ public class UsersView extends VerticalLayout implements BeforeEnterObserver {
     }
 
     private void openAssignGroupDialog(Long userId) {
-        this.currentUserId = userId;
         confirmDialog.setText("Вы уверены, что хотите прикрепить пользователя к группе?");
+        assignGroupButton.addClickListener(e -> assignGroup(userId));
         assignGroupDialog.open();
     }
 
     private void openUnassignGroupDialog(Long userId) {
-        this.currentUserId = userId;
         confirmDialog.setText("Вы уверены, что хотите открепить пользователя от группы?");
+        confirmDialog.addConfirmListener(e -> unassignGroup(userId));
         confirmDialog.open();
     }
 
     private void toggleEnableStatus(Long userId, boolean currentStatus) {
-        this.currentUserId = userId;
         confirmDialog.setText(currentStatus ? "Вы уверены, что хотите выключить пользователя?" : "Вы уверены, что хотите включить пользователя?");
+        confirmDialog.addConfirmListener(e -> setEnabled(userId, !currentStatus));
         confirmDialog.open();
     }
 
     private void promoteToAdmin(Long userId) {
-        this.currentUserId = userId;
         confirmDialog.setText("Вы уверены, что хотите выдать права администратора?");
+        confirmDialog.addConfirmListener(e -> setRole(userId, "ROLE_ADMIN"));
         confirmDialog.open();
     }
 
     private void demoteFromAdmin(Long userId) {
-        this.currentUserId = userId;
         confirmDialog.setText("Вы уверены, что хотите отзывать права администратора?");
+        confirmDialog.addConfirmListener(e -> setRole(userId, "ROLE_TEACHER"));
         confirmDialog.open();
     }
 
-    private void assignGroup() {
+    private void assignGroup(Long userId) {
         GroupDTO selectedGroup = groupComboBox.getValue();
         if (selectedGroup == null) {
             Notification.show("Выберите группу", 3000, Notification.Position.TOP_CENTER);
@@ -245,24 +252,42 @@ public class UsersView extends VerticalLayout implements BeforeEnterObserver {
         }
 
         try {
-            //usersService.assignGroupToStudent(currentUserId, selectedGroup.getId());
+            usersService.assignGroupToStudent(userId, selectedGroup.getId());
             Notification.show("Группа назначена успешно", 3000, Notification.Position.TOP_CENTER);
             assignGroupDialog.close();
             refreshGrid();
         } catch (Exception e) {
-            Notification.show("Ошибка при назначении группы", 3000, Notification.Position.TOP_CENTER);
+            Notification.show(e.getMessage(), 3000, Notification.Position.TOP_CENTER);
         }
     }
 
     private void unassignGroup(Long userId) {
         try {
-            //usersService.unassignGroupFromStudent(userId);
+            usersService.unassignGroupFromStudent(userId);
             Notification.show("Группа откреплена успешно", 3000, Notification.Position.TOP_CENTER);
             refreshGrid();
         } catch (Exception e) {
-            Notification.show("Ошибка при откреплении группы", 3000, Notification.Position.TOP_CENTER);
+            Notification.show(e.getMessage(), 3000, Notification.Position.TOP_CENTER);
         }
     }
 
+    private void setEnabled(Long userId, boolean targetEnable) {
+        try {
+            authService.setUserEnabled(userId, targetEnable);
+            Notification.show(targetEnable ? "Пользователь подключен успешно" : "Пользователь отключен успешно", 3000, Notification.Position.TOP_CENTER);
+            refreshGrid();
+        } catch (Exception e) {
+            Notification.show(e.getMessage(), 3000, Notification.Position.TOP_CENTER);
+        }
+    }
 
+    private void setRole(Long userId, String role) {
+        try {
+            usersService.setRole(userId, role);
+            Notification.show(Objects.equals(role, "ROLE_TEACHER") ? "Права администратора успешно отозваны" : "Права администратора успешно подключены", 3000, Notification.Position.TOP_CENTER);
+            refreshGrid();
+        } catch (Exception e) {
+            Notification.show(e.getMessage(), 3000, Notification.Position.TOP_CENTER);
+        }
+    }
 }

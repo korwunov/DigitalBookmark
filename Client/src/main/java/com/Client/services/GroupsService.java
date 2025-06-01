@@ -48,7 +48,7 @@ public class GroupsService {
                 );
             }
             else {
-                log.error(String.format("POST /registration returned %s, response body %s", httpException.getStatusCode(), httpException.getResponseBodyAs(HttpErrorResponseDTO.class)));
+                log.error(String.format("POST /api/bookmark/groups returned %s, response body %s", httpException.getStatusCode(), httpException.getResponseBodyAs(HttpErrorResponseDTO.class)));
                 throw new RestClientException("Наблюдаются технические проблемы, попробуйте поставить оценку позже");
             }
         }
