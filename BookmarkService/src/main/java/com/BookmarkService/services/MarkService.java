@@ -19,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -101,7 +102,8 @@ public class MarkService {
         List<MarkResponseDTO> marksResponse = new ArrayList<>();
         for (SubjectMarkRecord mark : marks) {
             marksResponse.add(new MarkResponseDTO(mark.getId(), mark.getMarkSubject().getName(),
-                    mark.getMarkGiver().getName(), mark.getMarkOwner().getName(), mark.getMarkOwner().getGroup().getName(),
+                    mark.getMarkGiver().getName(), mark.getMarkOwner().getName(),
+                            Objects.nonNull(mark.getMarkOwner().getGroup()) ? mark.getMarkOwner().getGroup().getName() : "Не назначена",
                     mark.getMarkSetDate(), mark.getMarkValue()));
         }
         return marksResponse;
@@ -122,7 +124,8 @@ public class MarkService {
         List<MarkResponseDTO> marksResponse = new ArrayList<>();
         for (SubjectMarkRecord mark : marks) {
             marksResponse.add(new MarkResponseDTO(mark.getId(), mark.getMarkSubject().getName(),
-                    mark.getMarkGiver().getName(), mark.getMarkOwner().getName(), mark.getMarkOwner().getGroup().getName(),
+                    mark.getMarkGiver().getName(), mark.getMarkOwner().getName(),
+                    Objects.nonNull(mark.getMarkOwner().getGroup()) ? mark.getMarkOwner().getGroup().getName() : "Не назначена",
                     mark.getMarkSetDate(), mark.getMarkValue()));
         }
         return marksResponse;

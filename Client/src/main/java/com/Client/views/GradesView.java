@@ -99,10 +99,10 @@ public class GradesView extends VerticalLayout implements BeforeEnterObserver {
         saveGradeButton.addClickListener(e -> saveMark());
 
         // Настройка основного содержимого
+        addGradeButton.setClassName("add-grade-button");
         mainContainer.setSizeFull();
         mainContainer.setClassName("grades-view");
-
-        addGradeDialog.addClassName("add-grade-dialog");
+//        addGradeDialog.addClassName("add-grade-dialog");
         subjectComboBox.addClassName("form-field");
         studentComboBox.addClassName("form-field");
         groupComboBox.addClassName("form-field");
@@ -122,10 +122,10 @@ public class GradesView extends VerticalLayout implements BeforeEnterObserver {
                 loadStudentsByGroupAndSubject(groupComboBox.getValue().getId(), selectedSubject.getId());
             }
         });
-
-        mainContainer.add(gradesGrid);
-        Header header = new Header(GradesView.class);
-        add(header, mainContainer);
+        Div mainContainerHeader = new Div();
+        mainContainerHeader.add(new H2("Оценки"), addGradeButton);
+        mainContainerHeader.addClassName("grid-header");
+        mainContainer.add(mainContainerHeader, gradesGrid);
     }
 
     private void saveMark() {
@@ -170,14 +170,14 @@ public class GradesView extends VerticalLayout implements BeforeEnterObserver {
                 if (Objects.nonNull(gradesGrid.getColumnByKey("giverName"))) gradesGrid.removeColumn(gradesGrid.getColumnByKey("giverName"));
                 if (Objects.nonNull(gradesGrid.getColumnByKey("markId"))) gradesGrid.removeColumn(gradesGrid.getColumnByKey("markId"));
                 // Добавление кнопки и модального окна для оценивания
-                add(addGradeButton, addGradeDialog);
+                add(addGradeDialog);
                 addGradeButton.addClickListener(e -> addGradeDialog.open());
                 groupComboBox.setItems(groupsService.getAllGroups());
                 subjectComboBox.setItems(subjectsService.getAllUserSubjects());
             } else if (Objects.equals(role, "ROLE_ADMIN")) {
                 List<MarksDataDTO> grades = marksService.getMarks("teachers");
                 gradesGrid.setDataProvider(new ListDataProvider<>(grades));
-                add(addGradeButton, addGradeDialog);
+                add(addGradeDialog);
                 addGradeButton.addClickListener(e -> addGradeDialog.open());
                 groupComboBox.setItems(groupsService.getAllGroups());
                 subjectComboBox.setItems(subjectsService.getAllUserSubjects());
@@ -203,6 +203,8 @@ public class GradesView extends VerticalLayout implements BeforeEnterObserver {
             event.rerouteTo("/login");
         }
         else {
+            Header header = new Header(GradesView.class, UserSession.getUserRole());
+            add(header, mainContainer);
             refreshGrid();
         }
     }

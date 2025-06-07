@@ -1,11 +1,15 @@
 package com.Client.services;
 
+import com.Client.model.UserSession;
+import com.Client.model.request.GroupCreationDTO;
 import com.Client.model.response.HttpErrorResponseDTO;
 import com.Client.model.response.StudentDTO;
 import com.Client.utils.HttpRequestEntity;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -48,6 +52,31 @@ public class StudentsService {
             } else {
                 log.error(String.format("GET /students returned %s, response body %s", httpException.getStatusCode(), httpException.getResponseBodyAs(HttpErrorResponseDTO.class)));
                 throw new RestClientException("Наблюдаются технические проблемы, попробуйте получить список позже");
+            }
+        }
+    }
+
+    public void createGroup(String name) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", UserSession.getUserToken());
+        HttpEntity<GroupCreationDTO> requestEntity = new HttpEntity<>(new GroupCreationDTO(name), headers);
+        try {
+            restTemplate.exchange(
+                    this.bookmarkServiceUrl + BOOKMARK_SERVICE_ROUTE + "/groups",
+                    HttpMethod.POST,
+                    requestEntity,
+                    new ParameterizedTypeReference<>() {}
+            );
+        } catch (HttpClientErrorException | HttpServerErrorException httpException) {
+            if (httpException.getClass().getSuperclass() == HttpClientErrorException.class) {
+                throw new RestClientException(
+                        Objects.requireNonNull(
+                                httpException.getResponseBodyAs(HttpErrorResponseDTO.class)
+                        ).message
+                );
+            } else {
+                log.error(String.format("POST /groups returned %s, response body %s", httpException.getStatusCode(), httpException.getResponseBodyAs(HttpErrorResponseDTO.class)));
+                throw new RestClientException("Наблюдаются технические проблемы, попробуйте создать позже");
             }
         }
     }

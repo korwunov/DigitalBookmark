@@ -4,6 +4,7 @@ import com.Client.model.UserSession;
 import com.Client.model.request.AssignGroupRequest;
 import com.Client.model.request.SetRoleRequest;
 import com.Client.model.response.HttpErrorResponseDTO;
+import com.Client.model.response.ShortenUserDataResponse;
 import com.Client.model.response.UserDataDTO;
 import com.Client.utils.HttpRequestEntity;
 import lombok.extern.log4j.Log4j;
@@ -58,13 +59,35 @@ public class UsersService {
         }
     }
 
+    public List<ShortenUserDataResponse> getShortenUserData() {
+        try {
+            return restTemplate.exchange(
+                    this.bookmarkServiceUrl + BOOKMARK_SERVICE_ROUTE + "/admin/usersForFileSharing",
+                    HttpMethod.GET,
+                    HttpRequestEntity.getRequestEntity(),
+                    new ParameterizedTypeReference<List<ShortenUserDataResponse>>() {}
+            ).getBody();
+        } catch (HttpClientErrorException | HttpServerErrorException httpException) {
+            if (httpException.getClass().getSuperclass() == HttpClientErrorException.class) {
+                throw new RestClientException(
+                        Objects.requireNonNull(
+                                httpException.getResponseBodyAs(HttpErrorResponseDTO.class)
+                        ).message
+                );
+            } else {
+                log.error(String.format("GET /usersForFileSharing returned %s, response body %s", httpException.getStatusCode(), httpException.getResponseBodyAs(HttpErrorResponseDTO.class)));
+                throw new RestClientException("Наблюдаются технические проблемы, попробуйте получить список позже");
+            }
+        }
+    }
+
     public void assignGroupToStudent(Long userId, Long groupId) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", UserSession.getUserToken());
         HttpEntity<AssignGroupRequest> httpEntity = new HttpEntity<>(new AssignGroupRequest(userId, groupId), headers);
         try {
             restTemplate.exchange(
-                    this.bookmarkServiceUrl + BOOKMARK_SERVICE_ROUTE + "/group/assign",
+                    this.bookmarkServiceUrl + BOOKMARK_SERVICE_ROUTE + "/groups/assign",
                     HttpMethod.POST,
                     httpEntity,
                     new ParameterizedTypeReference<>() {}
@@ -86,7 +109,7 @@ public class UsersService {
     public void unassignGroupFromStudent(Long userId) {
         try {
             restTemplate.exchange(
-                    this.bookmarkServiceUrl + BOOKMARK_SERVICE_ROUTE + "/group/unassign/" + userId,
+                    this.bookmarkServiceUrl + BOOKMARK_SERVICE_ROUTE + "/groups/unassign/" + userId,
                     HttpMethod.POST,
                     HttpRequestEntity.getRequestEntity(),
                     new ParameterizedTypeReference<>() {

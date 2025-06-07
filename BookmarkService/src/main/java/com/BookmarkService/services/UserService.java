@@ -4,10 +4,12 @@ import com.BookmarkService.domain.EROLE;
 import com.BookmarkService.domain.User;
 import com.BookmarkService.repositories.UserRepository;
 import com.BookmarkService.web.dto.request.RoleDTO;
+import com.BookmarkService.web.dto.response.ShortenUserData;
 import com.BookmarkService.web.httpStatusesExceptions.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,5 +35,13 @@ public class UserService {
 
     public List<User> getAllUsers() {
         return this.userRepository.findAll();
+    }
+
+    public List<ShortenUserData> getAllUsersForFileSharing() {
+        List<ShortenUserData> response = new ArrayList<ShortenUserData>();
+        for (User u : userRepository.findAll()) {
+            response.add(new ShortenUserData(u.getId(), u.getUsername(), u.getName(), u.getRole()));
+        }
+        return response;
     }
 }

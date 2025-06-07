@@ -2,13 +2,15 @@
      background-color: #f0f2f5; /* Фоновый цвет страницы */
 }
 
-.users-view {
+.files-view {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100%;
+    width: 98%;
     background-color: #f0f2f5; /* Фоновый цвет страницы */
     justify-content: center;
     align-items: center;
+    padding: 20px;
 }
 
 .grid-header {
@@ -18,127 +20,32 @@
     width: 95%;
 }
 
-.grid-container {
-    width: 80%;
-    max-width: 800px;
-}
-
-.add-group-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.assign-group-dialog {
-    width: 400px;
-    padding: 20px;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.assign-group-dialog .dialog-header {
+.grids-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-}
-
-.assign-group-dialog .dialog-header h2 {
-    margin: 0;
-}
-
-.assign-group-dialog .dialog-header i {
-    cursor: pointer;
-}
-
-.assign-group-dialog .form-field {
-    margin-bottom: 10px;
     width: 100%;
+    height: 100%;
 }
 
-.assign-group-dialog button {
-    width: 100%;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    padding: 10px 0;
+.grid-elem {
+    margin: 20px
 }
 
-.assign-group-dialog button:hover {
-    background-color: #0056b3;
-}
-
-.promote-button {
+.download-button {
     color: #007bff;
     cursor: pointer;
 }
 
-.demote-button {
-    color: #007bff;
+.delete-button {
+    color: red;
     cursor: pointer;
 }
 
-.assign-group-button {
-    color: #007bff;
+.share-button {
+    color: #28a745;
     cursor: pointer;
 }
-
-.unassign-group-button {
-    color: #007bff;
-    cursor: pointer;
-}
-.enable-icon {
-    cursor: pointer;
-}
-
-.promote-dialog {
-    width: 400px;
-    padding: 20px;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.promote-dialog .dialog-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.promote-dialog .dialog-header h2 {
-    margin: 0;
-}
-
-.promote-dialog .dialog-header i {
-    cursor: pointer;
-}
-
-.promote-dialog button {
-    width: 100%;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    padding: 10px 0;
-    margin-bottom: 10px;
-}
-
-.promote-dialog button:hover {
-    background-color: #0056b3;
-}
-
 .confirm-dialog {
     width: 400px;
     padding: 20px;
@@ -153,4 +60,137 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+}
+
+.confirm-dialog .dialog-header h2 {
+    margin: 0;
+}
+
+.confirm-dialog .dialog-header i {
+    cursor: pointer;
+}
+
+.confirm-dialog button {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 0;
+    margin-bottom: 10px;
+}
+
+.confirm-dialog button:hover {
+    background-color: #0056b3;
+}
+
+.confirm-dialog .cancel-button {
+    background-color: #dc3545;
+}
+
+.confirm-dialog .cancel-button:hover {
+    background-color: #c82333;
+}
+
+.share-file-dialog {
+    width: 400px;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.share-file-dialog .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.share-file-dialog .dialog-header h2 {
+    margin: 0;
+}
+
+.share-file-dialog .dialog-header i {
+    cursor: pointer;
+}
+
+.share-file-dialog .form-field {
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.share-file-dialog button {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 0;
+}
+
+.share-file-dialog button:hover {
+    background-color: #0056b3;
+}
+
+.upload-file-dialog {
+    width: 400px;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.upload-file-dialog .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.upload-file-dialog .dialog-header h2 {
+    margin: 0;
+}
+
+.upload-file-dialog .dialog-header i {
+    cursor: pointer;
+}
+
+.upload-component {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.upload-component .v-upload {
+    width: 100%;
+    border: 2px dashed #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.upload-component .v-upload:hover {
+    border-color: #007bff;
+}
+
+.upload-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 20px;
+    margin-top: 20px;
+}
+
+.upload-button:hover {
+    background-color: #218838;
 }

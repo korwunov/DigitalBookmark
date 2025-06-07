@@ -25,8 +25,6 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver {
     private Paragraph messageParagraph = new Paragraph();
 
     public ProfileView() {
-        Header header = new Header(ProfileView.class);
-
         // Настройка стилей
         setSizeFull();
         getStyle().setBackgroundColor("#f0f2f5");
@@ -39,7 +37,6 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver {
         logoutButton.setClassName("logout-button");
         logoutButton.addClickListener(e -> logout());
         mainContainer.add(userInfoContainer, logoutButton);
-        add(header, mainContainer, messageParagraph);
     }
 
     private void logout() {
@@ -58,6 +55,8 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver {
             loginHeader.setText("Логин: " + userData.username);
             idHeader.setText("ID: " + userData.id);
             rolesParagraph.setText("Роль: " + userData.role);
+            Header header = new Header(ProfileView.class, UserSession.getUserRole());
+            add(header, mainContainer, messageParagraph);
         }
     }
 }

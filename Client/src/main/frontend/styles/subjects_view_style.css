@@ -1,9 +1,12 @@
+.background-style {
+     background-color: #f0f2f5; /* Фоновый цвет страницы */
+}
+
 .subjects-view {
     display: flex;
     height: 100%;
     width: 100%;
     flex-direction: column;
-    background-color: #f0f2f5; /* Фоновый цвет страницы */
     justify-content: center;
     align-items: center;
 }

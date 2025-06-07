@@ -127,7 +127,7 @@ public class SubjectsView extends VerticalLayout implements BeforeEnterObserver 
         subjectsGrid.getColumnByKey("id").setAutoWidth(true);
         subjectsGrid.addColumn(SubjectDTO::getName).setKey("subjectsNames").setHeader("Предмет").setAutoWidth(true);;
         subjectsGrid.addColumn(subject -> String.join(", ", subject.getStudentsNames())).setKey("originStudentsNames").setHeader("Студенты").setAutoWidth(true);;
-        subjectsGrid.addColumn(subject -> String.join(", ", subject.getTeachersNames())).setKey("originTeachersNames").setHeader("Преподаватели").setAutoWidth(true);;
+        subjectsGrid.addColumn(subject -> String.join(", \n", subject.getTeachersNames())).setKey("originTeachersNames").setHeader("Преподаватели").setAutoWidth(true);;
 
         subjectsGrid.addComponentColumn(subject -> {
             VerticalLayout actionsLayout = new VerticalLayout();
@@ -153,7 +153,7 @@ public class SubjectsView extends VerticalLayout implements BeforeEnterObserver 
         }).setKey("actions").setHeader("Действия");
         mainContainer.setClassName("subjects-view");
 
-        addSubjectDialog.addClassName("add-subject-dialog");
+//        addSubjectDialog.addClassName("add-subject-dialog");
         subjectNameField.addClassName("form-field");
         saveSubjectButton.addClassName("form-field");
 
@@ -165,7 +165,7 @@ public class SubjectsView extends VerticalLayout implements BeforeEnterObserver 
         mainContainerHeader.addClassName("grid-header");
         mainContainer.add(mainContainerHeader, subjectsGrid, addSubjectDialog);
         setSizeFull();
-        add(new Header(SubjectsView.class), mainContainer);
+        addClassName("background-style");
     }
 
     private void saveSubject() {
@@ -263,6 +263,7 @@ public class SubjectsView extends VerticalLayout implements BeforeEnterObserver 
             event.rerouteTo("/login");
         }
         else {
+            add(new Header(SubjectsView.class, UserSession.getUserRole()), mainContainer);
             refreshGrid();
         }
     }

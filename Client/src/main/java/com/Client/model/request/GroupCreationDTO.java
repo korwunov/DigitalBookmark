@@ -5,7 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class SetRoleRequest {
-    public Long id;
-    public String role;
+public class GroupCreationDTO {
+    public String name;
 }

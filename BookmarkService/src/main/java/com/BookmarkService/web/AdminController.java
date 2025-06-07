@@ -4,7 +4,9 @@ import com.BookmarkService.domain.*;
 import com.BookmarkService.middleware.Authentication;
 import com.BookmarkService.services.UserService;
 import com.BookmarkService.web.dto.request.RoleDTO;
+import com.BookmarkService.web.dto.response.ShortenUserData;
 import com.BookmarkService.services.MarkService;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,6 +41,12 @@ public class AdminController {
     @Authentication(roles = {EROLE.ROLE_ADMIN})
     public List<User> getAllUsers(@RequestHeader("Authorization") String token, Object user) {
         return this.userService.getAllUsers();
+    }
+
+    @GetMapping("/usersForFileSharing")
+    @Authentication(roles = {EROLE.ROLE_TEACHER, EROLE.ROLE_STUDENT})
+    public List<ShortenUserData> getUsersForFileSharing(@RequestHeader("Authorization") String token, Object user) {
+        return this.userService.getAllUsersForFileSharing();
     }
 
     @GetMapping("/getMarksStat")

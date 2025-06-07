@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
@@ -19,8 +20,8 @@ public class RestClientConfig {
     public RestTemplate restTemplate() {
         RestTemplate template = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setSupportedMediaTypes(Collections.singletonList(MediaType.APPLICATION_JSON));
-        template.setMessageConverters(List.of(converter));
+        converter.setSupportedMediaTypes(List.of(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM));
+        template.setMessageConverters(List.of(converter, new ByteArrayHttpMessageConverter()));
         return template;
     }
 }

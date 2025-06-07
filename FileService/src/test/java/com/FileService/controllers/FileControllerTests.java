@@ -47,7 +47,7 @@ public class FileControllerTests {
         User user = new Teacher();
         user.setName("test");
         user.setRole(EROLE.ROLE_TEACHER);
-        this.fileController.uploadFile("token", user, file, FILENAME_WITHOUT_EXTENSION);
+        this.fileController.uploadFile("token", user, file);
         Teacher t = teacherRepository.findByUsername("test").get();
         assert t.getFilesID() != null;
         FileEntity f = fileRepository.findById(t.getFilesID().get(0)).get();

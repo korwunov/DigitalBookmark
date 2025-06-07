@@ -1,10 +1,20 @@
+.background-style {
+     background-color: #f0f2f5; /* Фоновый цвет страницы */
+}
+
 .grades-view {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    background-color: #f0f2f5; /* Фоновый цвет страницы */
     justify-content: center;
     align-items: center;
+}
+
+.grid-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    width: 95%;
 }
 
 .grid-container {
@@ -57,14 +67,12 @@
 }
 
 .add-grade-button {
-    margin-top: 20px;
     background-color: #007bff;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    padding: 10px 0;
 }
 
 .add-grade-button:hover {

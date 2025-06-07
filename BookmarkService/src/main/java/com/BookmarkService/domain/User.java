@@ -42,6 +42,9 @@ public abstract class User implements UserDetails {
     @Column(nullable = true)
     private List<Long> filesID;
 
+    @Column
+    private List<Long> sharedFilesIds;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     @JsonView(Views.UserDataResponse.class)
