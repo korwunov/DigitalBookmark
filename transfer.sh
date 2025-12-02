@@ -1,0 +1,2 @@
+docker save -o <absolute path> <image>
+scp -i ~/.ssh/cloud_ru_id_rsa docker-compose.yml nginx.conf images/bookmark.tar images/file.tar images/auth.tar images/client.tar user@82.202.137.186:~/digitalbookmark

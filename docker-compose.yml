@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 services:
   bookmarkservice:
@@ -60,6 +60,22 @@ services:
     networks:
       - digitalbookmark
 
+  client:
+    image: client-service:latest
+    container_name: client
+    ports:
+      - "8083:8083"
+    depends_on:
+      - authservice
+      - bookmarkservice
+      - fileservice
+    environment:
+      - AUTHSERVICE_HOST=http://authservice:8081
+      - BOOKMARKSERVICE_HOST=http://bookmarkservice:8080
+      - FILESERVICE_HOST=http://fileservice:8082
+    networks:
+      - digitalbookmark
+
   rabbitmq:
     image: rabbitmq:3.13-rc-management
     container_name: rabbitmq
@@ -69,14 +85,20 @@ services:
     networks:
       - digitalbookmark
 
-#  nginx:
-#    image: nginx:latest
-#    ports:
-#      - "80:80"
-#    volumes:
-#      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-#    depends_on:
-#      - app
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - bookmarkservice
+      - fileservice
+      - authservice
+      - client
+    networks:
+      - digitalbookmark
 
   db:
     image: 'postgres:15.1-alpine'
@@ -85,98 +107,54 @@ services:
       - POSTGRES_USER=digitalbookmark
       - POSTGRES_PASSWORD=postgrePass
       - POSTGRES_DB=digitalbookmark
-    networks:
-      - digitalbookmark
-
-  mongo:
-    image: 'mongo:5'
-    container_name: 'mongo'
-    networks:
-      - digitalbookmark
-
-  elasticsearch:
-    image: 'kuzzleio/elasticsearch:7'
-    container_name: elasticsearch
     volumes:
-      - es_data:/usr/share/elasticsearch/data
-    environment:
-      - discovery.type=single-node
-      - http.host=0.0.0.0
-      - transport.host=localhost
-      - network.host=0.0.0.0
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    ports:
-      - "9200:9200"
+      - postgres-data:/var/lib/postgresql
     networks:
       - digitalbookmark
-
-  graylog:
-    image: 'graylog/graylog:6.0'
-    container_name: graylog
-    volumes:
-      - graylog_journal:/usr/share/graylog/data/journal
-    environment:
-      - GRAYLOG_PASSWORD_SECRET=password1234567890
-      - GRAYLOG_ROOT_USERNAME=admin
-      - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
-      - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9000/
-      - GRAYLOG_WEB_ENDPOINT_URI=http://localhost:9000/api
-      - GRAYLOG_ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    depends_on:
-      - mongo
-      - elasticsearch
-    ports:
-      - "9000:9000"
-      - "12201:12201/udp"
-      - "12201:12201"
-      - "1514:1514"
-      - "5555:5555"
-    networks:
-      - digitalbookmark
-
-  prometheus:
-    image: 'prom/prometheus'
-    container_name: 'prometheus'
-    ports:
-      - 9090:9090
-    volumes:
-      - ./prometheus:/etc/prometheus
-    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
-    networks:
-      - digitalbookmark
-
-  grafana:
-    image: 'grafana/grafana-enterprise'
-    container_name: 'grafana'
-    depends_on:
-      - prometheus
-    ports:
-      - 3000:3000
-    volumes:
-      - grafana-data:/var/lib/grafana
-    networks:
-      - digitalbookmark
-
-  postgres-exporter:
-    image: bitnami/postgres-exporter:latest
-    container_name: postgres-exporter
-    environment:
-      DATA_SOURCE_NAME: "postgres://digitalbookmark:postgrePass@postgres:5432/digitalbookmark?sslmode=disable"
-    ports:
-      - "9187:9187"
-    depends_on:
-      - db
-    networks:
-      - digitalbookmark
-
-volumes:
-  grafana-data:
-  graylog_journal:
-  es_data:
 
 networks:
   digitalbookmark:
+
+volumes:
+   postgres-data:
+
+
+#  prometheus:
+#    image: 'prom/prometheus'
+#    container_name: 'prometheus'
+#    ports:
+#      - 9090:9090
+#    volumes:
+#      - ./prometheus:/etc/prometheus
+#    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
+#    networks:
+#      - digitalbookmark
+#
+#  grafana:
+#    image: 'grafana/grafana-enterprise'
+#    container_name: 'grafana'
+#    depends_on:
+#      - prometheus
+#    ports:
+#      - 3000:3000
+#    volumes:
+#      - grafana-data:/var/lib/grafana
+#    networks:
+#      - digitalbookmark
+#
+#  postgres-exporter:
+#    image: bitnami/postgres-exporter:latest
+#    container_name: postgres-exporter
+#    environment:
+#      DATA_SOURCE_NAME: "postgres://digitalbookmark:postgrePass@postgres:5432/digitalbookmark?sslmode=disable"
+#    ports:
+#      - "9187:9187"
+#    depends_on:
+#      - db
+#    networks:
+#      - digitalbookmark
+
+#volumes:
+#  grafana-data:
+#  graylog_journal:
+#  es_data:

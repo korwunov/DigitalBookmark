@@ -1,6 +1,11 @@
 билд образов для докера: `mvn clean package spring-boot:build-image`
 настроить сокет докер демона в корневом pom.xml
 
+для билда образа для клиента необходимо получить .jar `mvn clean package -Pproduction` (в директории Client)
+затем собрать docker образ из Dockerfile в директории Client
+полученный образ использовать в корневом docker-compose.yml
+
+Ниже для k8s:
 после билда образов необходимо загрузить их в minikube командой
 `minikube image load <имя образа>:<тэг образа>`
 

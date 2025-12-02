@@ -125,9 +125,9 @@ public class SubjectsView extends VerticalLayout implements BeforeEnterObserver 
          *  Настройка основного содержимого
          */
         subjectsGrid.getColumnByKey("id").setAutoWidth(true);
-        subjectsGrid.addColumn(SubjectDTO::getName).setKey("subjectsNames").setHeader("Предмет").setAutoWidth(true);;
-        subjectsGrid.addColumn(subject -> String.join(", ", subject.getStudentsNames())).setKey("originStudentsNames").setHeader("Студенты").setAutoWidth(true);;
-        subjectsGrid.addColumn(subject -> String.join(", \n", subject.getTeachersNames())).setKey("originTeachersNames").setHeader("Преподаватели").setAutoWidth(true);;
+        subjectsGrid.addColumn(SubjectDTO::getName).setKey("subjectsNames").setHeader("Предмет").setAutoWidth(true);
+        subjectsGrid.addColumn(subject -> String.join(", ", subject.getStudentsNames())).setKey("originStudentsNames").setHeader("Студенты").setAutoWidth(true);
+        subjectsGrid.addColumn(subject -> String.join(", \n", subject.getTeachersNames())).setKey("originTeachersNames").setHeader("Преподаватели").setAutoWidth(true);
 
         subjectsGrid.addComponentColumn(subject -> {
             VerticalLayout actionsLayout = new VerticalLayout();

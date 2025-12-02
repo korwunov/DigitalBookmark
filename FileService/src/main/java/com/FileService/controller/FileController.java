@@ -77,7 +77,7 @@ public class FileController {
                 if (user instanceof Student) {
                     Student s = studentRepository.findById(((Student) user).getId()).get();
                     s.setFilesID(userFiles);
-                    studentRepository.save((Student) user);
+                    studentRepository.save(s);
                 }
                 log.info("File created, id: " + f.getId() + ", owner id: " + f.getFileOwner() + ", file name: " + 302L);
                 return new ResponseEntity<>(HttpStatus.OK);
